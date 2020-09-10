@@ -1,11 +1,11 @@
 use legion::*;
-use crate::SimpleSystem;
+use crate::{SimpleSystem, Context};
 
 #[derive(Default)]
 pub struct Frameworky
 {
-    world:World,
-    systems:Vec<Box<dyn SimpleSystem>>
+    systems:Vec<Box<dyn SimpleSystem>>,
+    context:Context
 }
 
 impl Frameworky
@@ -19,13 +19,13 @@ impl Frameworky
     {
         for s in self.systems.iter_mut()
         {
-            s.init();
+            s.once(&mut self.context);
         }
 
         loop {
             for s in self.systems.iter_mut()
             {
-                s.execute(&mut self.world);
+                s.update(&mut self.context);
             }
         }
     }

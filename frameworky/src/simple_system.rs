@@ -1,13 +1,15 @@
 use legion::World;
 
+use crate::Context;
+
 pub trait SimpleSystem
 {
-    fn init(&mut self)
+    fn once(&mut self, context:&mut Context)
     {
         // do nothing is the default
     }
 
-    fn execute(&mut self, _world:&mut World)
+    fn update(&mut self, context:&mut Context)
     {
         // do nothing is the default
     }

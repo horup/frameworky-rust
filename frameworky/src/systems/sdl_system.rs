@@ -1,4 +1,4 @@
-use crate::SimpleSystem;
+use crate::{SimpleSystem, Context};
 use render::Canvas;
 use pixels::Color;
 use event::Event;
@@ -19,7 +19,7 @@ pub struct SDLSystem
 
 impl SimpleSystem for SDLSystem
 {
-    fn init(&mut self) {
+    fn once(&mut self, context:&mut Context) {
         println!("Initializing SDL");
         self.sdl_context = Some(sdl2::init().unwrap());
         self.video_subsystem = Some(self.sdl_context.as_ref().unwrap().video().unwrap());
@@ -45,7 +45,7 @@ impl SimpleSystem for SDLSystem
         let mut event_pump = sdl_context.event_pump().unwrap();*/
     }
 
-    fn execute(&mut self, _world:&mut World) {
+    fn update(&mut self, context:&mut Context) {
         let event_pump = self.event_pump.as_mut().unwrap();
         for e in event_pump.poll_iter()
         {

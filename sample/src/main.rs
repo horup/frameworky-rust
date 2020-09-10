@@ -5,10 +5,10 @@ use frameworky::*;
 struct TestSystem {}
 impl SimpleSystem for TestSystem
 {
-    fn init(&mut self) {
+    fn once(&mut self, context:&mut Context) {
         
     }
-    fn execute(&mut self, world:&mut legion::World) {
+    fn update(&mut self, context:&mut Context) {
     }
 }
 
@@ -17,7 +17,6 @@ fn main()
     let mut f :Frameworky = Frameworky::default();
     f.push_system(TestSystem::default());
     f.push_system(SDLSystem::default());
-
     f.run();
 }
 
