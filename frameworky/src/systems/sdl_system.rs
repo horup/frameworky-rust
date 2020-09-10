@@ -1,6 +1,8 @@
 use crate::{SimpleSystem, Context};
 use render::Canvas;
+use pixels::Color;
 use event::Event;
+use rect::{Rect, Point};
 use video::Window;
 use sdl2::*;
 
@@ -30,9 +32,27 @@ impl SDLSystem
     }
 }
 
+impl SDLSystem {
+    fn draw(&mut self, context:&mut Context) {
+        let canvas = &mut self.canvas;
+        canvas.set_draw_color(Color::BLACK);
+        canvas.clear();
+
+        canvas.set_draw_color(Color::RGB(255,0,0));
+
+        canvas.draw_line(Point::new(0,0), Point::new(100,100));
+        canvas.present();
+    }
+}
+
 impl SimpleSystem for SDLSystem
 {
+
+    
     fn update(&mut self, context:&mut Context) {
+        self.draw(context);
+
+
         for e in self.event_pump.poll_iter()
         {
             match e {

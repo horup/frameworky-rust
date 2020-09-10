@@ -1,4 +1,4 @@
-use systems::SDLSystem;
+use systems::{SDLSystem, Kiss3DSystem};
 use frameworky::*;
 
 #[derive(Debug, Default)]
@@ -16,7 +16,7 @@ fn main()
 {
     let mut f :Frameworky = Frameworky::default();
     f.push_system(TestSystem::default());
-    f.push_system(SDLSystem::new("Sample", 800, 640));
+    f.push_system(Kiss3DSystem::new("Sample!"));
     f.run();
 }
 
