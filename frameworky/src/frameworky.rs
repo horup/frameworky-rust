@@ -15,7 +15,7 @@ impl Frameworky
         self.systems.push(Box::new(s));
     }
 
-    pub fn run(&mut self) -> !
+    pub fn run(&mut self)
     {
         for s in self.systems.iter_mut()
         {
@@ -26,6 +26,10 @@ impl Frameworky
             for s in self.systems.iter_mut()
             {
                 s.update(&mut self.context);
+            }
+
+            if !self.context.running {
+                return;
             }
         }
     }

@@ -16,7 +16,7 @@ fn main()
 {
     let mut f :Frameworky = Frameworky::default();
     f.push_system(TestSystem::default());
-    f.push_system(SDLSystem::default());
+    f.push_system(SDLSystem::new("Sample", 800, 640));
     f.run();
 }
 
