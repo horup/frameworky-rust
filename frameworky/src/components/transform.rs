@@ -1,5 +1,8 @@
-use nalgebra::*;
+use nalgebra::Vector3;
+
+
 #[derive(Clone, Copy, Debug, PartialEq, Default)]
+
 pub struct Transform
 {
     pub position:Vector3<f32>

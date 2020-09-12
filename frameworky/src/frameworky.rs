@@ -4,8 +4,8 @@ use crate::{SimpleSystem, Context};
 #[derive(Default)]
 pub struct Frameworky
 {
-    systems:Vec<Box<dyn SimpleSystem>>,
-    context:Context
+    pub systems:Vec<Box<dyn SimpleSystem>>,
+    pub context:Context
 }
 
 impl Frameworky

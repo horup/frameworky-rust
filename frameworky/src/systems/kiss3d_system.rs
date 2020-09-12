@@ -1,11 +1,15 @@
+use std::collections::HashMap;
 use nalgebra::Point3;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, ncollide3d::math::Vector, camera::ArcBall};
+use legion::*;
+use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, ncollide3d::math::Vector, camera::ArcBall, scene::SceneNode};
 
 use crate::{SimpleSystem, Context};
+use crate::components::*;
 pub struct Kiss3DSystem
 {
     window:Window,
-    arc_ball_camera:ArcBall
+    arc_ball_camera:ArcBall,
+    bodies:HashMap<Entity, SceneNode>
 }
 
 impl Kiss3DSystem
@@ -18,11 +22,37 @@ impl Kiss3DSystem
             Point3::origin());
         Kiss3DSystem {
             window,
-            arc_ball_camera: arc_ball
+            arc_ball_camera: arc_ball,
+            bodies:HashMap::new()
+        }
+    }
+
+    fn sync_from(&mut self, context:&mut Context) {
+        let window = &mut self.window;
+        let bodies = &mut self.bodies;
+        let world = &mut context.world;
+        let col = || rand::random::<f32>();
+
+        let test = Transform::default();
+        let mut query = <(Entity, &Transform, &Body)>::query();
+        for (k, t, b) in query.iter(world) {
+
+            // ensures bodies are added to the scene
+            if !bodies.contains_key(k) {
+                let mut sphere = window.add_sphere(0.5);
+                sphere.set_color(col(), col(), col());
+                bodies.insert(*k, sphere);
+            }
+
+            // and they are syncronized 
+            let mut sphere = bodies.get_mut(k).unwrap();
+            let p = &t.position;
+            sphere.set_local_translation(Translation::new(p.x, p.y, p.z));
         }
     }
 
     pub fn render(&mut self, context:&mut Context) {
+        self.sync_from(context);
         context.running = self.window.render_with_camera(&mut self.arc_ball_camera);
     }
 }
@@ -31,34 +61,12 @@ impl SimpleSystem for Kiss3DSystem
 {
     fn once(&mut self, context:&mut Context) {
         let w = &mut self.window;
-        let max = 10;
-        for y in 0..max
-        {
-            for x in 0..max
-            {
-                let col = || rand::random::<f32>();
-                
-                let mut c = w.add_cube(1.0, 1.0, 1.0);
-                c.set_color(col(), col(), col());
-                c.set_local_translation(
-                    Translation::new(x as f32 - max as f32/2.0, 0.0, y as f32 - max as f32/2.0));
-            }
-        }
-       
-     /*   {
-            let mut c = w.add_cube(1.0, 1.0, 1.0);
-            c.set_color(1.0, 1.0, 1.0);
-        }
-        {
-            let mut c = w.add_cube(1.0, 1.0, 1.0);
-            c.set_color(1.0, 1.0, 1.0);
-            c.set_local_translation(Translation::new(2.0, 0.0, 0.0));
-        }*/
-
-       // w.set_light(Light::StickToCamera);
+        
+        w.set_light(Light::StickToCamera);
     }
     fn update(&mut self, context:&mut Context) {
-        //self.render(context);
+     
+
         self.render(context)
     }
 }

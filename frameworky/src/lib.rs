@@ -10,4 +10,5 @@ pub use nalgebra;
 pub use legion;
 pub use simple_system::SimpleSystem;
 pub use context::Context;
+pub use rand::*;
 
