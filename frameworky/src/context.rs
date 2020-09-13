@@ -1,4 +1,9 @@
-use legion::World;
+use std::iter::Flatten;
+
+use crate::components::Body;
+use crate::{legion::*, components::Transform};
+use query::{View, Query, DefaultFilter, ChunkIter};
+use legion::{World};
 
 
 pub struct Context
@@ -13,4 +18,9 @@ impl Default for Context
     {
         Context { running:true, world:World::default() }
     }
+}
+
+
+impl Context
+{
 }

@@ -1,6 +1,9 @@
 use crate::components::Body;
 use crate::components::Transform;
-use systems::{SDLSystem, Kiss3DSystem};
+use legion::Entity;
+use legion::query::*;
+use rand::random;
+use systems::{Kiss3DSystem, BodySystem};
 use frameworky::*;
 
 #[derive(Debug, Default)]
@@ -11,6 +14,10 @@ impl SimpleSystem for TestSystem
         
     }
     fn update(&mut self, context:&mut Context) {
+        let mut q = <(Entity, &mut Transform, &Body)>::query();
+        for (e, t, b) in q.iter_mut(&mut context.world) {
+            t.position.x += 0.01;
+        }
     }
 }
 
@@ -18,6 +25,7 @@ fn main()
 {
     let mut f :Frameworky = Frameworky::default();
     f.push_system(TestSystem::default());
+    f.push_system(BodySystem::default());
     f.push_system(Kiss3DSystem::new("Sample!"));
     
     for _ in 0..10 {

@@ -11,7 +11,7 @@ pub struct Kiss3DSystem
     arc_ball_camera:ArcBall,
     bodies:HashMap<Entity, SceneNode>
 }
-
+type RenderableEntity<'a, E> = (E, &'a mut Transform, &'a mut Body);
 impl Kiss3DSystem
 {
     pub fn new(title:&str)->Self
@@ -32,23 +32,22 @@ impl Kiss3DSystem
         let bodies = &mut self.bodies;
         let world = &mut context.world;
         let col = || rand::random::<f32>();
+        let test = Transform::new(0.0, 0.0, 0.0);
+        test.position.x;
 
-        let test = Transform::default();
-        let mut query = <(Entity, &Transform, &Body)>::query();
-        for (k, t, b) in query.iter(world) {
-
-            // ensures bodies are added to the scene
+        <(Entity, &mut Transform, &mut Body)>::query().for_each_mut(world, |(k, t, b)| {
             if !bodies.contains_key(k) {
+                
                 let mut sphere = window.add_sphere(0.5);
                 sphere.set_color(col(), col(), col());
                 bodies.insert(*k, sphere);
             }
 
             // and they are syncronized 
-            let mut sphere = bodies.get_mut(k).unwrap();
+            let sphere = bodies.get_mut(k).unwrap();
             let p = &t.position;
             sphere.set_local_translation(Translation::new(p.x, p.y, p.z));
-        }
+        });
     }
 
     pub fn render(&mut self, context:&mut Context) {
