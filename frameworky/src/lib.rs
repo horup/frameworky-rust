@@ -14,4 +14,5 @@ pub use nalgebra;
 pub use rand;
 pub use legion;
 pub use nphysics3d;
+pub use generational_arena;
 

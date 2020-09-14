@@ -1,16 +1,16 @@
-use nalgebra::Point3;
+use nalgebra::Vector3;
 
-
+type Precision = f32;
 #[derive(Clone, Copy, Debug)]
 pub struct Transform
 {
-    pub position:Point3<f32>
+    pub position:Vector3<Precision>
 }
 
 impl Transform
 {
-    pub fn new(px:f32, py:f32, pz:f32) -> Transform
+    pub fn new(px:Precision, py:Precision, pz:Precision) -> Transform
     {
-        Transform {position:Point3::new(px, py, pz)}
+        Transform {position:Vector3::new(px, py, pz)}
     }
 }

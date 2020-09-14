@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use nalgebra::Point3;
 use legion::*;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, ncollide3d::math::Vector, camera::ArcBall, scene::SceneNode};
+use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera::ArcBall, scene::SceneNode};
 
 use crate::{SimpleSystem, Context};
 use crate::components::*;
@@ -9,7 +9,7 @@ pub struct Kiss3DSystem
 {
     window:Window,
     arc_ball_camera:ArcBall,
-    bodies:HashMap<Entity, SceneNode>
+    nodes:HashMap<Entity, SceneNode>
 }
 type RenderableEntity<'a, E> = (E, &'a mut Transform, &'a mut Body);
 impl Kiss3DSystem
@@ -23,13 +23,13 @@ impl Kiss3DSystem
         Kiss3DSystem {
             window,
             arc_ball_camera: arc_ball,
-            bodies:HashMap::new()
+            nodes:HashMap::new()
         }
     }
 
     fn sync_from(&mut self, context:&mut Context) {
         let window = &mut self.window;
-        let bodies = &mut self.bodies;
+        let bodies = &mut self.nodes;
         let world = &mut context.world;
         let col = || rand::random::<f32>();
         let test = Transform::new(0.0, 0.0, 0.0);
