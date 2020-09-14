@@ -23,7 +23,7 @@ impl BodySystem {
 
 impl Default for BodySystem {
     fn default() -> Self {
-        let gravity = -9.81;
+        let gravity = -0.081;
         let mechanical_world = DefaultMechanicalWorld::new(Vector3::new(0.0, gravity, 0.0));
         let geometrical_world = DefaultGeometricalWorld::new();
         let bodies = DefaultBodySet::new();
@@ -45,7 +45,7 @@ impl Default for BodySystem {
 impl SimpleSystem for BodySystem {
     fn once(&mut self, context:&mut crate::Context)
     {
-        // do nothing is the default
+        
     }
 
     fn update(&mut self, context:&mut crate::Context)
@@ -56,13 +56,18 @@ impl SimpleSystem for BodySystem {
         for (e, t, b) in q.iter_mut(&mut context.world ){
             if b.body_handle == None {
                 let mut rigid_body_builder = RigidBodyDesc::<Precision>::new()
+                .mass(1.0)
                 .translation(t.position);
 
-                rigid_body_builder.enable_gravity(true);
-
-                let mut body = rigid_body_builder.build();
+                let body = rigid_body_builder.build();
                 let body_handle = self.bodies.insert(body);
                 b.body_handle = Some(body_handle);
+
+                let sphere = ShapeHandle::new(Ball::new(0.5));
+                let collider = ColliderDesc::new(sphere)
+                .build(BodyPartHandle(body_handle, 0));
+
+                self.colliders.insert(collider);
             }
         }
 
