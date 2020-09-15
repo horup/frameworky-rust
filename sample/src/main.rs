@@ -28,12 +28,13 @@ fn main()
     f.push_system(BodySystem::default());
     f.push_system(Kiss3DSystem::new("Sample!"));
     
-    for _ in 0..10 {
+    for _ in 0..100 {
 
         let x = random::<f32>() * 5.0;
         let z = random::<f32>() * 5.0;
+        let y = random::<f32>() * 3.0 + 1.0;
         f.context.world.push(
-            (Transform::new(x, 1.0, z), 
+            (Transform::new(x, y, z), 
             Body::default()));
     }
     

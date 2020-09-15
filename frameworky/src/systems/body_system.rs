@@ -22,7 +22,7 @@ impl BodySystem {
 
 impl Default for BodySystem {
     fn default() -> Self {
-        let gravity = -0.081;
+        let gravity = -9.806;
         let mechanical_world = DefaultMechanicalWorld::new(na::Vector3::new(0.0, gravity, 0.0));
         let geometrical_world = DefaultGeometricalWorld::new();
         let bodies = DefaultBodySet::new();

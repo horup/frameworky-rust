@@ -7,11 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-legion = "*"
-nalgebra = "*"
+legion = "0.3.0"
+nalgebra = "0.22.0"
 sdl2 = "*"
-kiss3d = "*"
-rand = "*"
-ncollide3d = "*"
-nphysics3d = "*"
-generational-arena = "0.2"
+kiss3d = "0.25.0"
+rand = "0.7.3"
+ncollide3d = "0.17.0"
+nphysics3d = "0.17.0"
+generational-arena = "0.2.8"
