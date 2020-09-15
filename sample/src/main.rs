@@ -28,7 +28,7 @@ fn main()
     f.push_system(BodySystem::default());
     f.push_system(Kiss3DSystem::new("Sample!"));
     
-    for _ in 0..100 {
+    for _ in 0..1000 {
 
         let x = random::<f32>() * 5.0;
         let z = random::<f32>() * 5.0;
