@@ -1,10 +1,9 @@
 
 use crate::{SimpleSystem, components::Transform, components::Body};
-use ncollide3d::shape::{ShapeHandle, Ball};
+use ncollide3d::shape::{ShapeHandle, Ball, Plane};
 use legion::{query::*, Entity};
-use nphysics3d::{world::*, object::DefaultBodySet, object::DefaultColliderSet, joint::DefaultJointConstraintSet, force_generator::DefaultForceGeneratorSet, object::RigidBodyDesc, object::ColliderDesc, object::BodyPartHandle, algebra::Velocity3};
+use nphysics3d::{world::*, object::DefaultBodySet, object::DefaultColliderSet, joint::DefaultJointConstraintSet, force_generator::DefaultForceGeneratorSet, object::RigidBodyDesc, object::ColliderDesc, object::BodyPartHandle,  object::BodyStatus};
 use nalgebra as na;
-use na::Vector3;
 
 
 type Precision = f32;
@@ -24,7 +23,7 @@ impl BodySystem {
 impl Default for BodySystem {
     fn default() -> Self {
         let gravity = -0.081;
-        let mechanical_world = DefaultMechanicalWorld::new(Vector3::new(0.0, gravity, 0.0));
+        let mechanical_world = DefaultMechanicalWorld::new(na::Vector3::new(0.0, gravity, 0.0));
         let geometrical_world = DefaultGeometricalWorld::new();
         let bodies = DefaultBodySet::new();
         let colliders = DefaultColliderSet::new();
@@ -45,7 +44,17 @@ impl Default for BodySystem {
 impl SimpleSystem for BodySystem {
     fn once(&mut self, context:&mut crate::Context)
     {
-        
+        let body = RigidBodyDesc::<Precision>::new()
+        .status(BodyStatus::Static)
+        .build();
+
+        let body_handle = self.bodies.insert(body);
+
+        let plane = ShapeHandle::new(Plane::new(na::Vector3::<f32>::y_axis()));
+        let collider = ColliderDesc::new(plane)
+        .build(BodyPartHandle(body_handle, 0));
+
+        self.colliders.insert(collider);
     }
 
     fn update(&mut self, context:&mut crate::Context)
