@@ -1,5 +1,4 @@
-use legion::*;
-use crate::{SimpleSystem, Context};
+use crate::{SimpleSystem, Context, Event};
 
 #[derive(Default)]
 pub struct Frameworky
@@ -31,6 +30,13 @@ impl Frameworky
             if !self.context.running {
                 return;
             }
+        }
+    }
+
+    pub fn execute(&mut self, context:&mut Context, event:&dyn Event)
+    {
+        for s in self.systems.iter_mut() {
+            s.execute(context, event);
         }
     }
 }

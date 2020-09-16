@@ -11,13 +11,17 @@ use frameworky::*;
 struct TestSystem {}
 impl SimpleSystem for TestSystem
 {
-    fn once(&mut self, context:&mut Context) {
-        
-    }
-    fn update(&mut self, context:&mut Context) {
-        let mut q = <(Entity, &mut Transform, &Body)>::query();
-        for (e, t, b) in q.iter_mut(&mut context.world) {
-            t.position.x += 0.01;
+   
+    fn execute(&mut self, context:&mut Context, event:&dyn Event)
+    {
+        for i in 0..10 {
+            let a = 0.1;
+            let x = random::<f32>() * a;
+            let y = 5.0 + i as f32;
+            let z = random::<f32>() * a;
+    
+            let ball = (Transform::new(x, y, z), Body::default());
+            context.world.push(ball);
         }
     }
 }
@@ -25,6 +29,7 @@ impl SimpleSystem for TestSystem
 fn main()
 {
     let mut f :Frameworky = Frameworky::default();
+    f.push_system(TestSystem::default());
     f.push_system(BodySystem::default());
     f.push_system(Kiss3DSystem::new("Sample!"));
 

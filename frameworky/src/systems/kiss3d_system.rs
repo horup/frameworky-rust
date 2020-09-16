@@ -1,9 +1,9 @@
 use std::{collections::HashMap, f32::consts::PI};
 use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera::ArcBall, scene::SceneNode};
+use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera::ArcBall, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton};
 
-use crate::{SimpleSystem, Context};
+use crate::{SimpleSystem, Context, Event};
 use crate::components::*;
 pub struct Kiss3DSystem
 {
@@ -17,6 +17,7 @@ impl Kiss3DSystem
     {
         let mut window = Window::new(title);
         window.set_framerate_limit(Some(60));
+
         let arc_ball = ArcBall::new(
             Point3::new(0.0, 10.0, 10.0),
             Point3::origin());
@@ -58,11 +59,62 @@ impl Kiss3DSystem
         });
     }
 
+    fn process_events(&mut self, context:&mut Context) {
+        for e in self.window.events().iter() {
+            match e.value {
+                WindowEvent::MouseButton(mb, a, m) =>{
+                    let pos = self.window.cursor_pos().unwrap();
+                    let b = if mb == MouseButton::Button1 { 0 } else { 1 };
+                    if a == Action::Press {
+                        let e = MouseButtonDown {
+                            button:b,
+                            screen_x:pos.0,
+                            screen_y:pos.1
+                        };
+
+                        //self.execute(context, &e);
+                    }
+                    else {
+                        let e = MouseButtonUp {
+                            button:b,
+                            screen_x:pos.0,
+                            screen_y:pos.1
+                        };
+
+                        //self.execute(context, &e);
+                    }
+                },
+                _ => {}
+            }
+        }
+    }
+
     pub fn render(&mut self, context:&mut Context) {
         self.sync_from(context);
+
+       
         context.running = self.window.render_with_camera(&mut self.arc_ball_camera);
     }
 }
+
+#[derive(Debug, Default)]
+pub struct MouseButtonDown {
+    screen_x:f64,
+    screen_y:f64,
+    button:u32
+}
+impl Event for MouseButtonDown {
+}
+
+#[derive(Debug, Default)]
+pub struct MouseButtonUp {
+    screen_x:f64,
+    screen_y:f64,
+    button:u32
+}
+impl Event for MouseButtonUp {
+}
+
 
 impl SimpleSystem for Kiss3DSystem
 {
@@ -72,6 +124,7 @@ impl SimpleSystem for Kiss3DSystem
         w.set_light(Light::StickToCamera);
     }
     fn update(&mut self, context:&mut Context) {
+        self.process_events(context);
         self.render(context)
     }
 }
