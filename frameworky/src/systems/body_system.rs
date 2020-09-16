@@ -44,17 +44,7 @@ impl Default for BodySystem {
 impl SimpleSystem for BodySystem {
     fn once(&mut self, context:&mut crate::Context)
     {
-     /*   let body = RigidBodyDesc::<Precision>::new()
-        .status(BodyStatus::Static)
-        .build();
-
-        let body_handle = self.bodies.insert(body);
-
-        let plane = ShapeHandle::new(Plane::new(na::Vector3::<f32>::y_axis()));
-        let collider = ColliderDesc::new(plane)
-        .build(BodyPartHandle(body_handle, 0));
-
-        self.colliders.insert(collider);*/
+    
     }
 
     fn update(&mut self, context:&mut crate::Context)
@@ -68,7 +58,7 @@ impl SimpleSystem for BodySystem {
 
                 if b.shape == Shape::Sphere {
                     rigid_body_builder = rigid_body_builder
-                    .mass(1.0)
+                    .mass(10.0)
                     .translation(t.position);
 
                     let body = rigid_body_builder.build();
@@ -77,6 +67,7 @@ impl SimpleSystem for BodySystem {
 
                     let sphere = ShapeHandle::new(Ball::new(0.5));
                     let collider = ColliderDesc::new(sphere)
+                    .density(0.9)
                     .build(BodyPartHandle(body_handle, 0));
 
                     self.colliders.insert(collider);

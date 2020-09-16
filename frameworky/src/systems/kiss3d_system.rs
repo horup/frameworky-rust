@@ -11,12 +11,12 @@ pub struct Kiss3DSystem
     arc_ball_camera:ArcBall,
     nodes:HashMap<Entity, SceneNode>
 }
-type RenderableEntity<'a, E> = (E, &'a mut Transform, &'a mut Body);
 impl Kiss3DSystem
 {
     pub fn new(title:&str)->Self
     {
-        let window = Window::new(title);
+        let mut window = Window::new(title);
+        window.set_framerate_limit(Some(60));
         let arc_ball = ArcBall::new(
             Point3::new(0.0, 10.0, 10.0),
             Point3::origin());
@@ -66,14 +66,12 @@ impl Kiss3DSystem
 
 impl SimpleSystem for Kiss3DSystem
 {
-    fn once(&mut self, context:&mut Context) {
+    fn once(&mut self, _context:&mut Context) {
         let w = &mut self.window;
         
         w.set_light(Light::StickToCamera);
     }
     fn update(&mut self, context:&mut Context) {
-     
-
         self.render(context)
     }
 }

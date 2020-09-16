@@ -31,14 +31,14 @@ fn main()
     let plane = (Transform::new(0.0, 0.0, 0.0), Body::new(Shape::Plane));
     f.context.world.push(plane);
     
-    for _ in 0..10 {
+    for i in 0..10 {
+        let a = 0.1;
+        let x = random::<f32>() * a;
+        let y = 5.0 + i as f32;
+        let z = random::<f32>() * a;
 
-        let x = random::<f32>() * 5.0;
-        let z = random::<f32>() * 5.0;
-        let y = random::<f32>() * 3.0 + 1.0;
-        f.context.world.push(
-            (Transform::new(x, y, z), 
-            Body::default()));
+        let ball = (Transform::new(x, y, z), Body::default());
+        f.context.world.push(ball);
     }
     
 
