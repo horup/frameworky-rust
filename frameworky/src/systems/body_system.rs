@@ -61,7 +61,9 @@ impl SimpleSystem for BodySystem {
                     .mass(10.0)
                     .translation(t.position);
 
-                    let body = rigid_body_builder.build();
+                    let body = rigid_body_builder
+                    .linear_damping(0.9)
+                    .build();
                     let body_handle = self.bodies.insert(body);
                     b.body_handle = Some(body_handle);
 
