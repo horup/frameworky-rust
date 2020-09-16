@@ -1,5 +1,5 @@
 
-use crate::{SimpleSystem, components::Transform, components::Body};
+use crate::{SimpleSystem, components::Transform, components::Body, components::Shape};
 use ncollide3d::shape::{ShapeHandle, Ball, Plane};
 use legion::{query::*, Entity};
 use nphysics3d::{world::*, object::DefaultBodySet, object::DefaultColliderSet, joint::DefaultJointConstraintSet, force_generator::DefaultForceGeneratorSet, object::RigidBodyDesc, object::ColliderDesc, object::BodyPartHandle,  object::BodyStatus};
@@ -44,7 +44,7 @@ impl Default for BodySystem {
 impl SimpleSystem for BodySystem {
     fn once(&mut self, context:&mut crate::Context)
     {
-        let body = RigidBodyDesc::<Precision>::new()
+     /*   let body = RigidBodyDesc::<Precision>::new()
         .status(BodyStatus::Static)
         .build();
 
@@ -54,29 +54,48 @@ impl SimpleSystem for BodySystem {
         let collider = ColliderDesc::new(plane)
         .build(BodyPartHandle(body_handle, 0));
 
-        self.colliders.insert(collider);
+        self.colliders.insert(collider);*/
     }
 
     fn update(&mut self, context:&mut crate::Context)
     {
-        let bodies = &mut self.bodies;
         let mut q = <(Entity, &mut Transform, &mut Body)>::query();
 
         for (e, t, b) in q.iter_mut(&mut context.world ){
             if b.body_handle == None {
                 let mut rigid_body_builder = RigidBodyDesc::<Precision>::new()
-                .mass(1.0)
                 .translation(t.position);
 
-                let body = rigid_body_builder.build();
-                let body_handle = self.bodies.insert(body);
-                b.body_handle = Some(body_handle);
+                if b.shape == Shape::Sphere {
+                    rigid_body_builder = rigid_body_builder
+                    .mass(1.0)
+                    .translation(t.position);
 
-                let sphere = ShapeHandle::new(Ball::new(0.5));
-                let collider = ColliderDesc::new(sphere)
-                .build(BodyPartHandle(body_handle, 0));
+                    let body = rigid_body_builder.build();
+                    let body_handle = self.bodies.insert(body);
+                    b.body_handle = Some(body_handle);
 
-                self.colliders.insert(collider);
+                    let sphere = ShapeHandle::new(Ball::new(0.5));
+                    let collider = ColliderDesc::new(sphere)
+                    .build(BodyPartHandle(body_handle, 0));
+
+                    self.colliders.insert(collider);
+                }
+                else if b.shape == Shape::Plane {
+                    rigid_body_builder = rigid_body_builder
+                    .status(BodyStatus::Static)
+                    .translation(t.position);
+
+                    let body = rigid_body_builder.build();
+                    let body_handle = self.bodies.insert(body);
+                    b.body_handle = Some(body_handle);
+
+                    let plane = ShapeHandle::new(Plane::new(na::Vector3::<f32>::y_axis()));
+                    let collider = ColliderDesc::new(plane)
+                    .build(BodyPartHandle(body_handle, 0));
+
+                    self.colliders.insert(collider);
+                }
             }
         }
 

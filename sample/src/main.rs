@@ -1,6 +1,7 @@
 use crate::components::Body;
 use crate::components::Transform;
 use legion::Entity;
+use components::Shape;
 use legion::query::*;
 use rand::random;
 use systems::{Kiss3DSystem, BodySystem};
@@ -24,11 +25,13 @@ impl SimpleSystem for TestSystem
 fn main()
 {
     let mut f :Frameworky = Frameworky::default();
-   // f.push_system(TestSystem::default());
     f.push_system(BodySystem::default());
     f.push_system(Kiss3DSystem::new("Sample!"));
+
+    let plane = (Transform::new(0.0, 0.0, 0.0), Body::new(Shape::Plane));
+    f.context.world.push(plane);
     
-    for _ in 0..1000 {
+    for _ in 0..10 {
 
         let x = random::<f32>() * 5.0;
         let z = random::<f32>() * 5.0;

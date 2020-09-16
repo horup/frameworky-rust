@@ -1,4 +1,4 @@
 mod transform;
 mod body;
-pub use body::Body;
+pub use body::*;
 pub use transform::Transform;
