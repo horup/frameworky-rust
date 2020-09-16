@@ -1,5 +1,5 @@
-use std::collections::HashMap;
-use nalgebra::Point3;
+use std::{collections::HashMap, f32::consts::PI};
+use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
 use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera::ArcBall, scene::SceneNode};
 
@@ -37,16 +37,24 @@ impl Kiss3DSystem
 
         <(Entity, &mut Transform, &mut Body)>::query().for_each_mut(world, |(k, t, b)| {
             if !bodies.contains_key(k) {
-                
-                let mut sphere = window.add_sphere(0.5);
-                sphere.set_color(col(), col(), col());
-                bodies.insert(*k, sphere);
+                if b.shape == Shape::Sphere {
+                    let mut sphere = window.add_sphere(0.5);
+                    sphere.set_color(col(), col(), col());
+                    bodies.insert(*k, sphere);
+                }
+                else if b.shape == Shape::Plane {
+                    let size = 100.0;
+                    let mut plane = window.add_quad(size, size, 1, 1);
+                    let rot = UnitQuaternion::from_axis_angle(&Vector3::<f32>::x_axis(), PI / 2.0);
+                    plane.append_rotation(&rot);
+                }
             }
 
-            // and they are syncronized 
-            let sphere = bodies.get_mut(k).unwrap();
-            let p = &t.position;
-            sphere.set_local_translation(Translation::new(p.x, p.y, p.z));
+            if let Some(node) = bodies.get_mut(k) {
+                let p = &t.position;
+                node.set_local_translation(Translation::new(p.x, p.y, p.z));
+            }
+           
         });
     }
 
