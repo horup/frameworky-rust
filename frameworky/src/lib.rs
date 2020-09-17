@@ -2,14 +2,14 @@
 mod frameworky;
 mod simple_system;
 mod context;
-mod event;
-
 pub mod systems;
 pub mod components;
+pub mod events;
+
+
 pub use frameworky::Frameworky;
 pub use simple_system::SimpleSystem;
 pub use context::Context;
-pub use event::*;
 
 pub use nalgebra;
 pub use rand;

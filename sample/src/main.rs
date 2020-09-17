@@ -1,29 +1,33 @@
 use std::rc::Rc;
-
+use std::any::Any;
 use crate::components::Body;
 use crate::components::Transform;
-use legion::Entity;
 use components::Shape;
-use legion::query::*;
 use rand::random;
 use systems::{Kiss3DSystem, BodySystem};
 use frameworky::*;
+use events::MouseButtonDown;
 
 #[derive(Debug, Default)]
 struct TestSystem {}
 impl SimpleSystem for TestSystem
 {
-    fn execute(&mut self, context:&mut Context, event:&Rc<dyn Event>)
+    fn execute(&mut self, context:&mut Context, event:&dyn Any)
     {
-        for i in 0..10 {
-            let a = 0.1;
-            let x = random::<f32>() * a;
-            let y = 5.0 + i as f32;
-            let z = random::<f32>() * a;
-    
-            let ball = (Transform::new(x, y, z), Body::default());
-            context.world.push(ball);
+        let o:Option<&MouseButtonDown> = event.downcast_ref();
+        
+        if let Some(_up) = o {
+            for i in 0..10 {
+                let a = 0.1;
+                let x = random::<f32>() * a;
+                let y = 5.0 + i as f32;
+                let z = random::<f32>() * a;
+        
+                let ball = (Transform::new(x, y, z), Body::default());
+                context.world.push(ball);
+            }
         }
+       
     }
 }
 

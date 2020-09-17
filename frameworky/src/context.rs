@@ -1,12 +1,11 @@
-use std::rc::Rc;
-use crate::event::Event;
+use std::{rc::Rc, any::Any};
 use legion::world::World;
 
 pub struct Context
 {
     pub running:bool,
     pub world:World,
-    pub events:Vec<Rc<dyn Event>>
+    pub events:Vec<Rc<dyn Any>>
 }
 
 impl Default for Context
@@ -20,9 +19,9 @@ impl Default for Context
 
 impl Context
 {
-    pub fn push_event<T:Sized + Event + 'static>(&mut self, event:T)
+    pub fn push_event<T:Sized + Any + 'static>(&mut self, event:T)
     {
-        let rc:Rc<dyn Event> = Rc::new(event);
+        let rc:Rc<dyn Any> = Rc::new(event);
         self.events.push(rc);
     }
 }

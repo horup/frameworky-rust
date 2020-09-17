@@ -3,7 +3,7 @@ use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
 use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera::ArcBall, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton};
 
-use crate::{SimpleSystem, Context, Event};
+use crate::{SimpleSystem, Context, events::MouseButtonDown, events::MouseButtonUp};
 use crate::components::*;
 pub struct Kiss3DSystem
 {
@@ -95,24 +95,6 @@ impl Kiss3DSystem
        
         context.running = self.window.render_with_camera(&mut self.arc_ball_camera);
     }
-}
-
-#[derive(Debug, Default)]
-pub struct MouseButtonDown {
-    screen_x:f64,
-    screen_y:f64,
-    button:u32
-}
-impl Event for MouseButtonDown {
-}
-
-#[derive(Debug, Default)]
-pub struct MouseButtonUp {
-    screen_x:f64,
-    screen_y:f64,
-    button:u32
-}
-impl Event for MouseButtonUp {
 }
 
 

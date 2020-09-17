@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::{SimpleSystem, Context, Event};
+use crate::{SimpleSystem, Context};
 
 #[derive(Default)]
 pub struct Frameworky
@@ -35,7 +35,7 @@ impl Frameworky
             for s in self.systems.iter_mut()
             {
                 for e in events.iter() {
-                    s.execute(&mut self.context, e);
+                    s.execute(&mut self.context, e.as_ref());
                 }
             }
 

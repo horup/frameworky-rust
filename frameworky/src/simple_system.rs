@@ -1,5 +1,5 @@
-use std::rc::Rc;
-use crate::{Context, Event};
+use std::{rc::Rc, any::Any};
+use crate::{Context};
 
 pub trait SimpleSystem
 {
@@ -13,7 +13,7 @@ pub trait SimpleSystem
         // do nothing is the default
     }
 
-    fn execute(&mut self, _context:&mut Context, _event:&Rc<dyn Event>)
+    fn execute(&mut self, _context:&mut Context, _event:&dyn Any)
     {
         // do nothing is the default
     }
