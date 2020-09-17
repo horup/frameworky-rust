@@ -19,7 +19,7 @@ impl Kiss3DSystem
         window.set_framerate_limit(Some(60));
 
         let arc_ball = ArcBall::new(
-            Point3::new(0.0, 10.0, 10.0),
+            Point3::new(0.0, 20.0, 20.0),
             Point3::origin());
         Kiss3DSystem {
             window,
@@ -72,7 +72,7 @@ impl Kiss3DSystem
                             screen_y:pos.1
                         };
 
-                        //self.execute(context, &e);
+                        context.push_event(e);
                     }
                     else {
                         let e = MouseButtonUp {
@@ -81,7 +81,7 @@ impl Kiss3DSystem
                             screen_y:pos.1
                         };
 
-                        //self.execute(context, &e);
+                        context.push_event(e);
                     }
                 },
                 _ => {}

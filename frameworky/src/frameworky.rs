@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::{SimpleSystem, Context, Event};
 
 #[derive(Default)]
@@ -27,16 +29,19 @@ impl Frameworky
                 s.update(&mut self.context);
             }
 
+            let events = self.context.events.clone();
+            self.context.events.clear();
+
+            for s in self.systems.iter_mut()
+            {
+                for e in events.iter() {
+                    s.execute(&mut self.context, e);
+                }
+            }
+
             if !self.context.running {
                 return;
             }
-        }
-    }
-
-    pub fn execute(&mut self, context:&mut Context, event:&dyn Event)
-    {
-        for s in self.systems.iter_mut() {
-            s.execute(context, event);
         }
     }
 }

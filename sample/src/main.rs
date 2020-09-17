@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::components::Body;
 use crate::components::Transform;
 use legion::Entity;
@@ -11,8 +13,7 @@ use frameworky::*;
 struct TestSystem {}
 impl SimpleSystem for TestSystem
 {
-   
-    fn execute(&mut self, context:&mut Context, event:&dyn Event)
+    fn execute(&mut self, context:&mut Context, event:&Rc<dyn Event>)
     {
         for i in 0..10 {
             let a = 0.1;

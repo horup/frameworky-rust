@@ -1,5 +1,4 @@
-use legion::World;
-
+use std::rc::Rc;
 use crate::{Context, Event};
 
 pub trait SimpleSystem
@@ -14,7 +13,7 @@ pub trait SimpleSystem
         // do nothing is the default
     }
 
-    fn execute(&mut self, _context:&mut Context, event:&dyn Event)
+    fn execute(&mut self, _context:&mut Context, _event:&Rc<dyn Event>)
     {
         // do nothing is the default
     }
