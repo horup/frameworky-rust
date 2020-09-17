@@ -9,13 +9,12 @@ use frameworky::*;
 use events::MouseButtonDown;
 
 #[derive(Debug, Default)]
-struct TestSystem {}
-impl SimpleSystem for TestSystem
+struct ClickSystem {}
+impl SimpleSystem for ClickSystem
 {
     fn execute(&mut self, context:&mut Context, event:&dyn Any)
     {
         let o:Option<&MouseButtonDown> = event.downcast_ref();
-        
         if let Some(_up) = o {
             for i in 0..10 {
                 let a = 0.1;
@@ -34,7 +33,7 @@ impl SimpleSystem for TestSystem
 fn main()
 {
     let mut f :Frameworky = Frameworky::default();
-    f.push_system(TestSystem::default());
+    f.push_system(ClickSystem::default());
     f.push_system(BodySystem::default());
     f.push_system(Kiss3DSystem::new("Sample!"));
 
