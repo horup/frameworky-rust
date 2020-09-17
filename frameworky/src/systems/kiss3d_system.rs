@@ -1,4 +1,4 @@
-use std::{collections::HashMap, f32::consts::PI};
+use std::{collections::HashMap, f32::consts::PI, time::Instant};
 use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
 use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera::ArcBall, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton};
@@ -16,7 +16,7 @@ impl Kiss3DSystem
     pub fn new(title:&str)->Self
     {
         let mut window = Window::new(title);
-        window.set_framerate_limit(Some(60));
+       // window.set_framerate_limit(Some(60));
 
         let arc_ball = ArcBall::new(
             Point3::new(0.0, 20.0, 20.0),
@@ -42,12 +42,17 @@ impl Kiss3DSystem
                     let mut sphere = window.add_sphere(0.5);
                     sphere.set_color(col(), col(), col());
                     bodies.insert(*k, sphere);
+/*
+                    let mut quad = window.add_quad(1.0, 1.0, 1, 1);
+                    quad.set_color(col(), col(), col());
+                    bodies.insert(*k, quad);*/
                 }
                 else if b.shape == Shape::Plane {
                     let size = 100.0;
                     let mut plane = window.add_quad(size, size, 1, 1);
                     let rot = UnitQuaternion::from_axis_angle(&Vector3::<f32>::x_axis(), PI / 2.0);
                     plane.append_rotation(&rot);
+                    bodies.insert(*k, plane);
                 }
             }
 
@@ -90,10 +95,14 @@ impl Kiss3DSystem
     }
 
     pub fn render(&mut self, context:&mut Context) {
+        let now = Instant::now();
         self.sync_from(context);
-
-       
         context.running = self.window.render_with_camera(&mut self.arc_ball_camera);
+
+        let took = now.elapsed().as_millis();
+        let mut s = String::from("Sample render: ");
+        s.push_str(&took.to_string());
+        self.window.set_title(&s);
     }
 }
 
