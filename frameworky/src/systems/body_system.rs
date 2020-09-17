@@ -41,17 +41,13 @@ impl Default for BodySystem {
     }
 }
 
-impl SimpleSystem for BodySystem {
-    fn once(&mut self, context:&mut crate::Context)
-    {
-    
-    }
-
+impl SimpleSystem for BodySystem 
+{
     fn update(&mut self, context:&mut crate::Context)
     {
         let mut q = <(Entity, &mut Transform, &mut Body)>::query();
 
-        for (e, t, b) in q.iter_mut(&mut context.world ){
+        for (_e, t, b) in q.iter_mut(&mut context.world ){
             if b.body_handle == None {
                 let mut rigid_body_builder = RigidBodyDesc::<Precision>::new()
                 .translation(t.position);
@@ -94,17 +90,15 @@ impl SimpleSystem for BodySystem {
 
         self.mechanical_world.step(&mut self.geometrical_world, &mut self.bodies, &mut self.colliders, &mut self.joint_constraints, &mut self.force_generators);
 
-        for (e, t, b) in q.iter_mut(&mut context.world ){
+        for (_, t, b) in q.iter_mut(&mut context.world ){
             if let Some(body_handle) = b.body_handle {
                 let body = self.bodies.get(body_handle).unwrap();
                 let part = body.part(0).unwrap();
                 let translation = part.position().translation;
-                
                 t.position.x = translation.x;
                 t.position.y = translation.y;
                 t.position.z = translation.z;
 
-                //t.position = t.position.add_to(rhs, out) + translation;
             }
         }
     }

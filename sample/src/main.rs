@@ -1,4 +1,3 @@
-use std::rc::Rc;
 use std::any::Any;
 use crate::components::Body;
 use crate::components::Transform;
@@ -26,7 +25,6 @@ impl SimpleSystem for ClickSystem
                 context.world.push(ball);
             }
         }
-       
     }
 }
 

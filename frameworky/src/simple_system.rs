@@ -1,4 +1,4 @@
-use std::{rc::Rc, any::Any};
+use std::{any::Any};
 use crate::{Context};
 
 pub trait SimpleSystem

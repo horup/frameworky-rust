@@ -15,7 +15,7 @@ impl Kiss3DSystem
 {
     pub fn new(title:&str)->Self
     {
-        let mut window = Window::new(title);
+        let window = Window::new(title);
        // window.set_framerate_limit(Some(60));
 
         let arc_ball = ArcBall::new(
@@ -67,7 +67,7 @@ impl Kiss3DSystem
     fn process_events(&mut self, context:&mut Context) {
         for e in self.window.events().iter() {
             match e.value {
-                WindowEvent::MouseButton(mb, a, m) =>{
+                WindowEvent::MouseButton(mb, a, _m) =>{
                     let pos = self.window.cursor_pos().unwrap();
                     let b = if mb == MouseButton::Button1 { 0 } else { 1 };
                     if a == Action::Press {
