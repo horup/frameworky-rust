@@ -9,7 +9,6 @@ edition = "2018"
 [dependencies]
 legion = "0.3.0"
 nalgebra = "0.22.0"
-sdl2 = "*"
 kiss3d = "0.25.0"
 rand = "0.7.3"
 ncollide3d = "0.24.0"
