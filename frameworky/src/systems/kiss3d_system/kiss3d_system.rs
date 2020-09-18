@@ -3,7 +3,7 @@ use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
 use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton};
 
-use crate::{SimpleSystem, Context, events::MouseButtonDown, events::MouseButtonUp, events::KeyEvent};
+use crate::{SimpleSystem, Context, events::MouseEvent, events::MouseEventType, events::KeyEvent};
 use crate::components::*;
 
 use super::arc_ball_modified::ArcBallModified;
@@ -74,30 +74,18 @@ impl Kiss3DSystem
                 {
                     let pos = self.window.cursor_pos().unwrap();
                     let b = if mb == MouseButton::Button1 { 0 } else { 1 };
-                    if a == Action::Press 
-                    {
-                        let e = MouseButtonDown 
-                        {
-                            button:b,
-                            screen_x:pos.0,
-                            screen_y:pos.1
-                        };
 
-                        context.push_event(e);
-                    }
-                    else 
+                    let e = MouseEvent
                     {
-                        let e = MouseButtonUp 
-                        {
-                            button:b,
-                            screen_x:pos.0,
-                            screen_y:pos.1
-                        };
+                        button:b,
+                        event_type:if a == Action::Press { MouseEventType::ButtonDown } else { MouseEventType::ButtonUp },
+                        screen_x:pos.0 as i32,
+                        screen_y:pos.1 as i32
+                    };
 
-                        context.push_event(e);
-                    }
+                    context.push_event(e);
                 },
-                WindowEvent::Key(key, action, modifier) => 
+                WindowEvent::Key(key, action, _modifier) => 
                 {
                     let e = KeyEvent { 
                         down:if action == Action::Press { true } else { false },
