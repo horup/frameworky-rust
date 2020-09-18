@@ -21,24 +21,11 @@ impl SimpleSystem for ClickSystem
         if let Some(key) = key_event {
             self.spawn = key.down;
         }
-        /*{
-            let o:Option<&MouseButtonDown> = event.downcast_ref();
-            if let Some(_up) = o {
-                self.spawn = true;
-            }
-        }
-
-        {
-            let o:Option<&MouseButtonUp> = event.downcast_ref();
-            if let Some(_up) = o {
-                self.spawn = false;
-            }
-        }*/
     }
 
-    fn update(&mut self, context:&mut Context) {
-        if self.spawn 
-        {
+    fn update(&mut self, context:&mut Context) 
+    {
+        if self.spawn {
             let a = 0.1;
             let x = random::<f32>() * a;
             let y = 10.0 as f32;
