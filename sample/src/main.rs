@@ -33,6 +33,7 @@ impl SimpleSystem for ClickSystem
     }
 
     fn update(&mut self, context:&mut Context) {
+        return;
         if self.spawn 
         {
             let a = 0.1;

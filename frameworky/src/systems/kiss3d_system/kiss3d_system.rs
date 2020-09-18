@@ -5,20 +5,22 @@ use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera
 
 use crate::{SimpleSystem, Context, events::MouseButtonDown, events::MouseButtonUp};
 use crate::components::*;
+
+use super::arc_ball_modified::ArcBallModified;
 pub struct Kiss3DSystem
 {
     window:Window,
-    arc_ball_camera:ArcBall,
+    arc_ball_camera:ArcBallModified,
     nodes:HashMap<Entity, SceneNode>
 }
 impl Kiss3DSystem
 {
     pub fn new(title:&str)->Self
     {
-        let window = Window::new(title);
-       // window.set_framerate_limit(Some(60));
+        let mut window = Window::new(title);
+        window.set_framerate_limit(Some(60));
 
-        let arc_ball = ArcBall::new(
+        let arc_ball = ArcBallModified::new(
             Point3::new(0.0, 20.0, 20.0),
             Point3::origin());
         Kiss3DSystem {
