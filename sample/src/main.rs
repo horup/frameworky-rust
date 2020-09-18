@@ -5,7 +5,7 @@ use components::Shape;
 use rand::random;
 use systems::{Kiss3DSystem, BodySystem};
 use frameworky::*;
-use events::{MouseButtonDown, MouseButtonUp};
+use events::{KeyEvent};
 
 #[derive(Debug, Default)]
 struct ClickSystem
@@ -17,7 +17,11 @@ impl SimpleSystem for ClickSystem
 {
     fn execute(&mut self, _context:&mut Context, event:&dyn Any)
     {
-        {
+        let key_event = event.downcast_ref::<KeyEvent>();
+        if let Some(key) = key_event {
+            self.spawn = key.down;
+        }
+        /*{
             let o:Option<&MouseButtonDown> = event.downcast_ref();
             if let Some(_up) = o {
                 self.spawn = true;
@@ -29,11 +33,10 @@ impl SimpleSystem for ClickSystem
             if let Some(_up) = o {
                 self.spawn = false;
             }
-        }
+        }*/
     }
 
     fn update(&mut self, context:&mut Context) {
-        return;
         if self.spawn 
         {
             let a = 0.1;

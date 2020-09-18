@@ -1,9 +1,9 @@
 use std::{collections::HashMap, f32::consts::PI, time::Instant};
 use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, camera::ArcBall, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton};
+use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton};
 
-use crate::{SimpleSystem, Context, events::MouseButtonDown, events::MouseButtonUp};
+use crate::{SimpleSystem, Context, events::MouseButtonDown, events::MouseButtonUp, events::KeyEvent};
 use crate::components::*;
 
 use super::arc_ball_modified::ArcBallModified;
@@ -68,12 +68,16 @@ impl Kiss3DSystem
 
     fn process_events(&mut self, context:&mut Context) {
         for e in self.window.events().iter() {
-            match e.value {
-                WindowEvent::MouseButton(mb, a, _m) =>{
+            match e.value 
+            {
+                WindowEvent::MouseButton(mb, a, _m) =>
+                {
                     let pos = self.window.cursor_pos().unwrap();
                     let b = if mb == MouseButton::Button1 { 0 } else { 1 };
-                    if a == Action::Press {
-                        let e = MouseButtonDown {
+                    if a == Action::Press 
+                    {
+                        let e = MouseButtonDown 
+                        {
                             button:b,
                             screen_x:pos.0,
                             screen_y:pos.1
@@ -81,8 +85,10 @@ impl Kiss3DSystem
 
                         context.push_event(e);
                     }
-                    else {
-                        let e = MouseButtonUp {
+                    else 
+                    {
+                        let e = MouseButtonUp 
+                        {
                             button:b,
                             screen_x:pos.0,
                             screen_y:pos.1
@@ -91,6 +97,28 @@ impl Kiss3DSystem
                         context.push_event(e);
                     }
                 },
+                WindowEvent::Key(key, action, modifier) => 
+                {
+                    let e = KeyEvent { 
+                        down:if action == Action::Press { true } else { false },
+                        key:key as u32
+                    };
+
+                    context.push_event(e);
+                   /* if action == Action::Press 
+                    {
+                        let index:i32 = key as i32;
+                        let e = KeyEvent {
+
+                        }
+                    }
+                    else 
+                    {
+
+                    }*/
+
+
+                }
                 _ => {}
             }
         }

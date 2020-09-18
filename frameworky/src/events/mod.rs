@@ -11,3 +11,9 @@ pub struct MouseButtonUp {
     pub screen_y:f64,
     pub button:u32
 }
+
+#[derive(Debug, Default)]
+pub struct KeyEvent {
+    pub key:u32,
+    pub down:bool
+}
