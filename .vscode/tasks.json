@@ -20,7 +20,13 @@
 				"$rustc"
 			],
 			"group": "build",
-			"label": "build"
+			"label": "build",
 		},
+		{
+			"type": "shell",
+			"command":"cd sample && wasm-pack build",
+			"group": "build",
+			"label": "wasm-pack: build"
+		}
 	]
 }
