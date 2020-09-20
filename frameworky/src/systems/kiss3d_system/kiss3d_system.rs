@@ -1,16 +1,16 @@
 use std::{collections::HashMap, f32::consts::PI, time::Instant};
-use nalgebra::{Point3, UnitQuaternion, Vector3};
+//use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton};
+use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, camera::ArcBall, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3};
 
 use crate::{SimpleSystem, Context, events::MouseEvent, events::MouseEventType, events::KeyEvent};
 use crate::components::*;
 
-use super::arc_ball_modified::ArcBallModified;
+//use super::arc_ball_modified::ArcBallModified;
 pub struct Kiss3DSystem
 {
     window:Window,
-    arc_ball_camera:ArcBallModified,
+    arc_ball_camera:ArcBall,
     nodes:HashMap<Entity, SceneNode>
 }
 impl Kiss3DSystem
@@ -20,7 +20,7 @@ impl Kiss3DSystem
         let mut window = Window::new(title);
         window.set_framerate_limit(Some(60));
 
-        let arc_ball = ArcBallModified::new(
+        let arc_ball = ArcBall::new(
             Point3::new(0.0, 20.0, 20.0),
             Point3::origin());
         Kiss3DSystem {

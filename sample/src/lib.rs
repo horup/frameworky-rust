@@ -3,7 +3,7 @@ use crate::components::Body;
 use crate::components::Transform;
 use components::Shape;
 use rand::random;
-use systems::{Kiss3DSystem, BodySystem};
+use systems::{BodySystem, Kiss3DSystem};
 use frameworky::*;
 use events::{KeyEvent};
 use wasm_bindgen::prelude::*;
