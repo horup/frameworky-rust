@@ -24,7 +24,7 @@
 		},
 		{
 			"type": "shell",
-			"command": "cd sample && wasm-pack build",
+			"command": "cd sample && wasm-pack build --target web",
 			"group": "build",
 			"label": "wasm-pack: build",
 			"problemMatcher": []
