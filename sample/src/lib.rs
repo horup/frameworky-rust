@@ -38,6 +38,7 @@ impl SimpleSystem for ClickSystem
     }
 }
 
+
 #[wasm_bindgen(start)]
 pub fn start()
 {
@@ -59,6 +60,5 @@ pub fn start()
         f.context.world.push(ball);
     }
     
-
-    f.run();
+    Frameworky::start_loop(f);
 }

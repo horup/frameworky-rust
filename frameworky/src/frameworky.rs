@@ -1,11 +1,56 @@
-use crate::{SimpleSystem, Context};
+use kiss3d::window::{State, Window};
 
-#[derive(Default)]
+use crate::{Context, SimpleSystem, systems::Kiss3DSystem};
+
 pub struct Frameworky
 {
     pub systems:Vec<Box<dyn SimpleSystem>>,
     pub context:Context
 }
+
+impl<'a> Default for Frameworky
+{
+    fn default() -> Self {
+
+        Self {
+            context: Context::default(),
+            systems: Vec::default()
+        }
+    }
+}
+
+impl State for Frameworky
+{
+    fn step(&mut self, window: &mut Window) {
+        if self.context.once == false
+        {
+            for s in self.systems.iter_mut()
+            {
+                s.once(&mut self.context);
+            }
+
+            self.context.once = true;
+        }
+
+        for s in self.systems.iter_mut()
+        {
+
+            s.update(&mut self.context);
+            s.update_with_window(&mut self.context, window);
+        }
+
+        let events = self.context.events.clone();
+        self.context.events.clear();
+
+        for s in self.systems.iter_mut()
+        {
+            for e in events.iter() {
+                s.execute(&mut self.context, e.as_ref());
+            }
+        }
+    }
+}
+
 
 impl Frameworky
 {
@@ -14,9 +59,11 @@ impl Frameworky
         self.systems.push(Box::new(s));
     }
 
-    pub fn run(&mut self)
+    pub fn start_loop(frameworky:Frameworky)
     {
-        for s in self.systems.iter_mut()
+        let window = Window::new("Kiss3d: wasm example");        
+        window.render_loop(frameworky);
+    /*    for s in self.systems.iter_mut()
         {
             s.once(&mut self.context);
         }
@@ -40,6 +87,6 @@ impl Frameworky
             if !self.context.running {
                 return;
             }
-        }
+        }*/
     }
 }

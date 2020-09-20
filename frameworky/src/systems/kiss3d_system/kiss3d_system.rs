@@ -9,7 +9,6 @@ use crate::components::*;
 //use super::arc_ball_modified::ArcBallModified;
 pub struct Kiss3DSystem
 {
-    window:Window,
     arc_ball_camera:ArcBall,
     nodes:HashMap<Entity, SceneNode>
 }
@@ -17,21 +16,19 @@ impl Kiss3DSystem
 {
     pub fn new(title:&str)->Self
     {
-        let mut window = Window::new(title);
+        /*let mut window = Window::new(title);
         window.set_framerate_limit(Some(60));
-
+*/
         let arc_ball = ArcBall::new(
             Point3::new(0.0, 20.0, 20.0),
             Point3::origin());
         Kiss3DSystem {
-            window,
             arc_ball_camera: arc_ball,
             nodes:HashMap::new()
         }
     }
 
-    fn sync_from(&mut self, context:&mut Context) {
-        let window = &mut self.window;
+    fn sync_from(&mut self, context:&mut Context, window:&mut Window) {
         let bodies = &mut self.nodes;
         let world = &mut context.world;
         let col = || rand::random::<f32>();
@@ -66,13 +63,13 @@ impl Kiss3DSystem
         });
     }
 
-    fn process_events(&mut self, context:&mut Context) {
-        for e in self.window.events().iter() {
+    fn process_events(&mut self, context:&mut Context, window:&mut Window) {
+        for e in window.events().iter() {
             match e.value 
             {
                 WindowEvent::MouseButton(mb, a, _m) =>
                 {
-                    let pos = self.window.cursor_pos().unwrap();
+                    let pos = window.cursor_pos().unwrap();
                     let b = if mb == MouseButton::Button1 { 0 } else { 1 };
 
                     let e = MouseEvent
@@ -112,15 +109,16 @@ impl Kiss3DSystem
         }
     }
 
-    pub fn render(&mut self, context:&mut Context) {
-        let now = Instant::now();
-        self.sync_from(context);
-        context.running = self.window.render_with_camera(&mut self.arc_ball_camera);
+    pub fn render(&mut self, context:&mut Context, window:&mut Window) {
+        //let now = Instant::now();
+        self.sync_from(context, window);
+       // context.once = self.window.render_with_camera(&mut self.arc_ball_camera);
 
+       /* context.running = self.window.render_with_state(state)
         let took = now.elapsed().as_millis();
         let mut s = String::from("Sample render: ");
         s.push_str(&took.to_string());
-        self.window.set_title(&s);
+        self.window.set_title(&s);*/
     }
 }
 
@@ -128,12 +126,14 @@ impl Kiss3DSystem
 impl SimpleSystem for Kiss3DSystem
 {
     fn once(&mut self, _context:&mut Context) {
-        let w = &mut self.window;
+       /* let w = _context.window.as_deref_mut().unwrap();
         
-        w.set_light(Light::StickToCamera);
+        w.set_light(Light::StickToCamera);*/
     }
-    fn update(&mut self, context:&mut Context) {
-        self.process_events(context);
-        self.render(context)
+
+    fn update_with_window(&mut self, context:&mut Context, window:&mut Window) 
+    {
+        self.process_events(context, window);
+        self.render(context, window);
     }
 }

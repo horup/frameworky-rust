@@ -1,9 +1,10 @@
 use std::{rc::Rc, any::Any};
+use kiss3d::window::Window;
 use legion::world::World;
 
 pub struct Context
 {
-    pub running:bool,
+    pub once:bool,
     pub world:World,
     pub events:Vec<Rc<dyn Any>>
 }
@@ -12,7 +13,7 @@ impl Default for Context
 {
     fn default() -> Self
     {
-        Context { running:true, world:World::default(), events:Vec::new() }
+        Context { once:false, world:World::default(), events:Vec::new() }
     }
 }
 
