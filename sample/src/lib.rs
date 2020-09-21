@@ -45,7 +45,7 @@ pub fn start()
     let mut f :Frameworky = Frameworky::default();
     f.push_system(ClickSystem::default());
     f.push_system(BodySystem::default());
-    f.push_system(Kiss3DSystem::new("Sample!"));
+    f.push_system(Kiss3DSystem::new());
 
     let plane = (Transform::new(0.0, 0.0, 0.0), Body::new(Shape::Plane));
     f.context.world.push(plane);

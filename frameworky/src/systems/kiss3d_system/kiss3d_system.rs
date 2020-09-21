@@ -14,7 +14,7 @@ pub struct Kiss3DSystem
 }
 impl Kiss3DSystem
 {
-    pub fn new(title:&str)->Self
+    pub fn new()->Self
     {
         /*let mut window = Window::new(title);
         window.set_framerate_limit(Some(60));
