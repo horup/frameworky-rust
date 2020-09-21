@@ -7,7 +7,7 @@ use crate::{SimpleSystem, Context, events::MouseEvent, events::MouseEventType, e
 use crate::components::*;
 
 //use super::arc_ball_modified::ArcBallModified;
-pub struct Kiss3DBackend
+pub struct Kiss3DHost
 {
     arc_ball_camera:ArcBall,
     nodes:HashMap<Entity, SceneNode>,
@@ -15,7 +15,7 @@ pub struct Kiss3DBackend
 }
 
 
-impl Kiss3DBackend
+impl Kiss3DHost
 {
     pub fn start(frameworky:Frameworky, title:&str)
     {
@@ -24,7 +24,7 @@ impl Kiss3DBackend
             Point3::origin());
 
         let window = Window::new(title);
-        let backend = Kiss3DBackend {
+        let backend = Kiss3DHost {
             arc_ball_camera: arc_ball,
             nodes:HashMap::new(),
             frameworky
@@ -127,7 +127,7 @@ impl Kiss3DBackend
     }
 }
 
-impl State for Kiss3DBackend
+impl State for Kiss3DHost
 {
     fn step(&mut self, window: &mut Window) {
         self.frameworky.update();

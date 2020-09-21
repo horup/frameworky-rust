@@ -2,7 +2,7 @@ use std::any::Any;
 use crate::components::Body;
 use crate::components::Transform;
 use components::Shape;
-use backends::kiss3d_backend::Kiss3DBackend;
+use hosts::kiss3d_host::Kiss3DHost;
 use rand::random;
 use systems::{BodySystem};
 use frameworky::*;
@@ -60,5 +60,5 @@ pub fn start()
         f.context.world.push(ball);
     }
     
-    Kiss3DBackend::start(f, "Sample 1");
+    Kiss3DHost::start(f, "Sample 1");
 }

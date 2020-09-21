@@ -1,6 +1,4 @@
 use std::{any::Any};
-use kiss3d::window::Window;
-
 use crate::{Context};
 
 pub trait SimpleSystem
@@ -19,10 +17,4 @@ pub trait SimpleSystem
     {
         // do nothing is the default
     }
-
-    fn update_with_window(&mut self, _context:&mut Context, window:&mut Window)
-    {
-        // do nothing is the default
-    }
-
 }
