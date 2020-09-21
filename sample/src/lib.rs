@@ -2,8 +2,9 @@ use std::any::Any;
 use crate::components::Body;
 use crate::components::Transform;
 use components::Shape;
+use backends::kiss3d_backend::Kiss3DBackend;
 use rand::random;
-use systems::{BodySystem, Kiss3DSystem};
+use systems::{BodySystem};
 use frameworky::*;
 use events::{KeyEvent};
 use wasm_bindgen::prelude::*;
@@ -45,7 +46,6 @@ pub fn start()
     let mut f :Frameworky = Frameworky::default();
     f.push_system(ClickSystem::default());
     f.push_system(BodySystem::default());
-    f.push_system(Kiss3DSystem::new());
 
     let plane = (Transform::new(0.0, 0.0, 0.0), Body::new(Shape::Plane));
     f.context.world.push(plane);
@@ -60,5 +60,5 @@ pub fn start()
         f.context.world.push(ball);
     }
     
-    Frameworky::start_loop(f);
+    Kiss3DBackend::start(f, "Sample 1");
 }

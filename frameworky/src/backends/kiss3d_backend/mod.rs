@@ -1,36 +1,41 @@
 use std::{collections::HashMap, f32::consts::PI, time::Instant};
 //use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, camera::ArcBall, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3};
+use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, camera::ArcBall, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State};
 
-use crate::{SimpleSystem, Context, events::MouseEvent, events::MouseEventType, events::KeyEvent};
+use crate::{SimpleSystem, Context, events::MouseEvent, events::MouseEventType, events::KeyEvent, Frameworky};
 use crate::components::*;
 
 //use super::arc_ball_modified::ArcBallModified;
-pub struct Kiss3DSystem
+pub struct Kiss3DBackend
 {
     arc_ball_camera:ArcBall,
-    nodes:HashMap<Entity, SceneNode>
+    nodes:HashMap<Entity, SceneNode>,
+    frameworky:Frameworky
 }
-impl Kiss3DSystem
+
+
+impl Kiss3DBackend
 {
-    pub fn new()->Self
+    pub fn start(frameworky:Frameworky, title:&str)
     {
-        /*let mut window = Window::new(title);
-        window.set_framerate_limit(Some(60));
-*/
         let arc_ball = ArcBall::new(
             Point3::new(0.0, 20.0, 20.0),
             Point3::origin());
-        Kiss3DSystem {
+
+        let window = Window::new(title);
+        let backend = Kiss3DBackend {
             arc_ball_camera: arc_ball,
-            nodes:HashMap::new()
-        }
+            nodes:HashMap::new(),
+            frameworky
+        };
+
+        window.render_loop(backend);
     }
 
-    fn sync_from(&mut self, context:&mut Context, window:&mut Window) {
+    fn sync_from(&mut self,  window:&mut Window) {
         let bodies = &mut self.nodes;
-        let world = &mut context.world;
+        let world = &mut self.frameworky.context.world;
         let col = || rand::random::<f32>();
         let test = Transform::new(0.0, 0.0, 0.0);
         test.position.x;
@@ -63,7 +68,7 @@ impl Kiss3DSystem
         });
     }
 
-    fn process_events(&mut self, context:&mut Context, window:&mut Window) {
+    fn process_events(&mut self, window:&mut Window) {
         for e in window.events().iter() {
             match e.value 
             {
@@ -80,7 +85,7 @@ impl Kiss3DSystem
                         screen_y:pos.1 as i32
                     };
 
-                    context.push_event(e);
+                    self.frameworky.context.push_event(e);
                 },
                 WindowEvent::Key(key, action, _modifier) => 
                 {
@@ -89,7 +94,7 @@ impl Kiss3DSystem
                         key:key as u32
                     };
 
-                    context.push_event(e);
+                    self.frameworky.context.push_event(e);
                    /* if action == Action::Press 
                     {
                         let index:i32 = key as i32;
@@ -109,9 +114,9 @@ impl Kiss3DSystem
         }
     }
 
-    pub fn render(&mut self, context:&mut Context, window:&mut Window) {
+    pub fn render(&mut self, window:&mut Window) {
         //let now = Instant::now();
-        self.sync_from(context, window);
+        self.sync_from(window);
        // context.once = self.window.render_with_camera(&mut self.arc_ball_camera);
 
        /* context.running = self.window.render_with_state(state)
@@ -122,18 +127,11 @@ impl Kiss3DSystem
     }
 }
 
-
-impl SimpleSystem for Kiss3DSystem
+impl State for Kiss3DBackend
 {
-    fn once(&mut self, _context:&mut Context) {
-       /* let w = _context.window.as_deref_mut().unwrap();
-        
-        w.set_light(Light::StickToCamera);*/
-    }
-
-    fn update_with_window(&mut self, context:&mut Context, window:&mut Window) 
-    {
-        self.process_events(context, window);
-        self.render(context, window);
+    fn step(&mut self, window: &mut Window) {
+        self.frameworky.update();
+        self.process_events(window);
+        self.sync_from(window);
     }
 }
