@@ -1,5 +1,4 @@
 use std::{rc::Rc, any::Any};
-use kiss3d::window::Window;
 use legion::world::World;
 
 pub struct Context

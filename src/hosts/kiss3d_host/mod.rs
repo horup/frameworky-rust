@@ -1,12 +1,12 @@
+#[allow(dead_code)]
 mod arc_ball_modified;
 use arc_ball_modified::ArcBall;
 
-use std::{collections::HashMap, f32::consts::PI, time::Instant};
-//use nalgebra::{Point3, UnitQuaternion, Vector3};
+use std::{collections::HashMap, f32::consts::PI};
 use legion::*;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
+use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
-use crate::{SimpleSystem, Context, events::MouseEvent, events::MouseEventType, events::KeyEvent, Frameworky};
+use crate::{ events::MouseEvent, events::MouseEventType, events::KeyEvent, Frameworky};
 use crate::components::*;
 
 //use super::arc_ball_modified::ArcBallModified;
