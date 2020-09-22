@@ -1,6 +1,6 @@
 use std::any::Any;
-use crate::components::Body;
-use crate::components::Transform;
+use components::Body;
+use components::Transform;
 use components::Shape;
 use hosts::kiss3d_host::Kiss3DHost;
 use rand::random;
@@ -60,5 +60,5 @@ pub fn start()
         f.context.world.push(ball);
     }
     
-    Kiss3DHost::start(f, "Sample 1");
+    Kiss3DHost::start(f, "Balls");
 }

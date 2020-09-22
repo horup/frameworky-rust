@@ -3,6 +3,7 @@
 	"tasks": [
 		{
 			"type": "cargo",
+			"args": ["--example", "balls"],
 			"command": "run",
 			"problemMatcher": [
 				"$rustc"

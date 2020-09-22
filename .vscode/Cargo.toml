@@ -12,4 +12,4 @@ name = "samplelib"
 
 [dependencies]
 wasm-bindgen = "0.2.68"
-frameworky = { version = "*", path = "../frameworky" }
+frameworky = { version = "*", path = "../.." }
