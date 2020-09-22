@@ -1,7 +1,10 @@
+mod arc_ball_modified;
+use arc_ball_modified::ArcBall;
+
 use std::{collections::HashMap, f32::consts::PI, time::Instant};
 //use nalgebra::{Point3, UnitQuaternion, Vector3};
 use legion::*;
-use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, camera::ArcBall, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State};
+use kiss3d::{window::Window, light::Light, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
 use crate::{SimpleSystem, Context, events::MouseEvent, events::MouseEventType, events::KeyEvent, Frameworky};
 use crate::components::*;
@@ -134,4 +137,16 @@ impl State for Kiss3DHost
         self.process_events(window);
         self.sync_from(window);
     }
+
+    fn cameras_and_effect_and_renderer(&mut self) -> (
+        Option<&mut dyn Camera>,
+        Option<&mut dyn PlanarCamera>,
+        Option<&mut dyn Renderer>,
+        Option<&mut dyn PostProcessingEffect>) 
+    {
+        let cam:&mut dyn Camera = &mut self.arc_ball_camera;
+
+        (Some(cam), None, None, None)
+    }
+
 }

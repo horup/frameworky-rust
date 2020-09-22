@@ -1,13 +1,10 @@
-#![allow(dead_code)]
-
 use kiss3d::camera::Camera;
 use kiss3d::event::{Action, Key, Modifiers, MouseButton, WindowEvent};
-use crate::nalgebra::{Isometry3, Matrix4, Perspective3, Point3, Unit, UnitQuaternion, Vector2, Vector3};
+use kiss3d::nalgebra as na;
+use kiss3d::nalgebra::{Isometry3, Matrix4, Perspective3, Point3, Unit, UnitQuaternion, Vector2, Vector3};
 use kiss3d::resource::ShaderUniform;
 use std::f32;
 use kiss3d::window::Canvas;
-
-use crate::nalgebra as na;
 
 /// Arc-ball camera mode.
 ///
@@ -20,7 +17,7 @@ use crate::nalgebra as na;
 /// * Scroll in/out - zoom in/out
 /// * Enter key - set the focus point to the origin
 #[derive(Clone, Debug)]
-pub struct ArcBallModified {
+pub struct ArcBall {
     /// The focus point.
     at: Point3<f32>,
     /// Yaw of the camera (rotation along the y axis).
@@ -59,10 +56,10 @@ pub struct ArcBallModified {
     coord_system: CoordSystemRh,
 }
 
-impl ArcBallModified {
+impl ArcBall {
     /// Create a new arc-ball camera.
-    pub fn new(eye: Point3<f32>, at: Point3<f32>) -> ArcBallModified {
-        ArcBallModified::new_with_frustrum(f32::consts::PI / 4.0, 0.1, 1024.0, eye, at)
+    pub fn new(eye: Point3<f32>, at: Point3<f32>) -> ArcBall {
+        ArcBall::new_with_frustrum(f32::consts::PI / 4.0, 0.1, 1024.0, eye, at)
     }
 
     /// Creates a new arc ball camera with default sensitivity values.
@@ -72,8 +69,8 @@ impl ArcBallModified {
         zfar: f32,
         eye: Point3<f32>,
         at: Point3<f32>,
-    ) -> ArcBallModified {
-        let mut res = ArcBallModified {
+    ) -> ArcBall {
+        let mut res = ArcBall {
             at: Point3::new(0.0, 0.0, 0.0),
             yaw: 0.0,
             pitch: 0.0,
@@ -346,7 +343,7 @@ impl ArcBallModified {
     }
 }
 
-impl Camera for ArcBallModified {
+impl Camera for ArcBall {
     fn clip_planes(&self) -> (f32, f32) {
         (self.projection.znear(), self.projection.zfar())
     }
