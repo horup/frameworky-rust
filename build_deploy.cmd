@@ -6,7 +6,7 @@ git stash
 
 git fetch --all
 git pull origin gh-pages
-git checkout --track origin/gh-pages
+git checkout --track origin/pages
 git rm examples/balls/pkg -r
 git add .
 git commit -m "cleanup"
