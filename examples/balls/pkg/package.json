@@ -1,0 +1,15 @@
+{
+  "name": "balls",
+  "collaborators": [
+    "horup <sah@sah.dk>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "balls_bg.wasm",
+    "balls.js",
+    "balls.d.ts"
+  ],
+  "module": "balls.js",
+  "types": "balls.d.ts",
+  "sideEffects": false
+}
