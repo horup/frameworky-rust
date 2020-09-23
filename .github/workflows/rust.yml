@@ -11,11 +11,9 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build WASM 
-      run: cargo install wasm-pack && wasm-pack build examples/balls --target web
-    - name: Deploy WASM to pages
-      run: ./deploy.sh
+    - name: Build and Deploy WASM
+      run: ./build_deploy.cmd
       
