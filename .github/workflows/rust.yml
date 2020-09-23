@@ -19,9 +19,5 @@ jobs:
     - name: Build WASM 
       run: cargo install wasm-pack && wasm-pack build examples/balls --target web
     - name: Deploy WASM to pages
-      run: |
-        git add -f examples/balls/pkg
-        git stash
-        git checkout pages
-        git stash pop
+      run: ./deploy.sh
       
