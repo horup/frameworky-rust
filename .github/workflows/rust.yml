@@ -14,5 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build
+    - name: Build Native Release
       run: cargo build --release
+    - name: Build WASM 
+      run: wasm-pack build examples/balls --target web
