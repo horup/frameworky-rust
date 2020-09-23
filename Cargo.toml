@@ -17,4 +17,4 @@ rand = "0.7.3"
 ncollide3d = "0.24.0"
 nphysics3d = {version = "0.17.0", features = ["use-wasm-bindgen"]}
 generational-arena = "0.2.8"
-kiss3d = {git = "https://github.com/sebcrozet/kiss3d.git", branch = "web-sys"}
+kiss3d = {git = "https://github.com/sebcrozet/kiss3d.git", branch = "master"}
