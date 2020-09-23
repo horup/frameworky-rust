@@ -14,14 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build Native Release
-      run: cargo build --release
     - name: Build WASM 
       run: cargo install wasm-pack && wasm-pack build examples/balls --target web
     - name: Deploy WASM to pages
       run: |
         git add -f examples/balls/pkg
         git stash
-        git checkout pages
+        git checkout --track origin/pages
         git stash pop
       
