@@ -17,4 +17,4 @@ jobs:
     - name: Build Native Release
       run: cargo build --release
     - name: Build WASM 
-      run: wasm-pack build examples/balls --target web
+      run: cargo install wasm-pack && wasm-pack build examples/balls --target web
