@@ -5,9 +5,12 @@ git add -f examples/balls/pkg
 git stash
 
 git fetch --all
-git checkout --track origin/pages
+git pull origin gh-pages
+git checkout --track origin/gh-pages
 git rm examples/balls/pkg -r
 git add .
 git commit -m "cleanup"
 git stash pop
 git commit -m "updated"
+git checkout master
+echo done
