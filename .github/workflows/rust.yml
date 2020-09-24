@@ -14,6 +14,10 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build Release
-      run: cargo build --release
+    - name: Build Examples
+      run: cargo build --example balls --release
+    - uses: actions/upload-artifact@v2
+      with: 
+        name: balls
+        path: target/release/examples/balls.exe
       
