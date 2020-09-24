@@ -15,5 +15,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build and Deploy WASM
-      run: ./build_deploy.cmd
+      run: |
+        cargo install wasm-pack
+        wasm-pack build examples/balls --target web
+
+        git add -f examples/balls/pkg
+        git stash
+
+        git fetch --all
+        git pull origin pages
+        git checkout --track origin/pages
+        git rm examples/balls/pkg -r
+        git add .
+        git commit -m "cleanup"
+        git stash pop
+        git commit -m "updated"
+        git checkout master
+        echo done
       
