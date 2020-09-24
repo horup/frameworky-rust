@@ -20,4 +20,11 @@ jobs:
       with: 
         name: balls
         path: target/release/examples/balls.exe
+    - name: Build WASM  
+      run: .\wasm_build.cmd
+    - name: Deploy WASM
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
       
