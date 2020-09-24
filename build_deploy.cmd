@@ -5,7 +5,7 @@ git add -f examples/balls/pkg
 git stash
 
 git fetch --all
-git pull origin gh-pages
+git pull origin pages
 git checkout --track origin/pages
 git rm examples/balls/pkg -r
 git add .
