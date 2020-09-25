@@ -1,10 +1,12 @@
 #[allow(dead_code)]
 mod arc_ball_modified;
 use arc_ball_modified::ArcBall;
+use nalgebra::Point2;
+use nphysics3d::math::Point;
 
-use std::{collections::HashMap, f32::consts::PI};
+use std::{collections::HashMap, f32::consts::PI, rc::Rc};
 use legion::*;
-use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
+use kiss3d::{camera::Camera, event::Action, event::MouseButton, event::WindowEvent, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, ncollide3d::math::Translation, planar_camera::PlanarCamera, post_processing::PostProcessingEffect, renderer::Renderer, scene::SceneNode, text::Font, window::State, window::Window};
 
 use crate::{ events::MouseEvent, events::MouseEventType, events::KeyEvent, Frameworky};
 use crate::components::*;
@@ -14,7 +16,8 @@ pub struct Kiss3DHost
 {
     arc_ball_camera:ArcBall,
     nodes:HashMap<Entity, SceneNode>,
-    frameworky:Frameworky
+    frameworky:Frameworky,
+    default_font:Rc<Font>
 }
 
 
@@ -30,7 +33,8 @@ impl Kiss3DHost
         let backend = Kiss3DHost {
             arc_ball_camera: arc_ball,
             nodes:HashMap::new(),
-            frameworky
+            frameworky,
+            default_font:Font::default()
         };
 
         window.render_loop(backend);
@@ -117,17 +121,18 @@ impl Kiss3DHost
         }
     }
 
-    pub fn render(&mut self, window:&mut Window) {
-        //let now = Instant::now();
-        self.sync_from(window);
-       // context.once = self.window.render_with_camera(&mut self.arc_ball_camera);
-
-       /* context.running = self.window.render_with_state(state)
-        let took = now.elapsed().as_millis();
-        let mut s = String::from("Sample render: ");
-        s.push_str(&took.to_string());
-        self.window.set_title(&s);*/
+    pub fn draw_text(&mut self, window:&mut Window)
+    {
+        for (_e, t) in <(Entity, &Text2D)>::query().iter(&self.frameworky.context.world)
+        {
+            window.draw_text(&t.text, 
+                &Point2::new(t.x as f32, t.y as f32),
+                t.size as f32, 
+                &self.default_font,
+                &Point::new(1.0, 1.0, 1.0));
+        }
     }
+
 }
 
 impl State for Kiss3DHost
@@ -136,6 +141,7 @@ impl State for Kiss3DHost
         self.frameworky.update();
         self.process_events(window);
         self.sync_from(window);
+        self.draw_text(window);
     }
 
     fn cameras_and_effect_and_renderer(&mut self) -> (
