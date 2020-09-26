@@ -13,6 +13,11 @@ pub trait SimpleSystem
         // do nothing is the default
     }
 
+    fn update_fixed(&mut self, _context:&mut Context)
+    {
+        // do nothing is the default
+    }
+
     fn execute(&mut self, _context:&mut Context, _event:&dyn Any)
     {
         // do nothing is the default
