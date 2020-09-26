@@ -35,6 +35,7 @@ impl Frameworky
 
             self.context.time.accumulator -= self.context.time.dt;
             self.context.time.t += self.context.time.dt;
+            self.context.fixed_update_count += 1;
         }
 
         self.context.time.alpha = self.context.time.accumulator / self.context.time.dt;

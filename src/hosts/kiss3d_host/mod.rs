@@ -6,7 +6,7 @@ use std::{collections::HashMap, f32::consts::PI};
 use legion::*;
 use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
-use crate::{ events::MouseEvent, events::MouseEventType, events::KeyEvent, Frameworky};
+use crate::{Frameworky, SimpleSystem, events::KeyEvent, events::MouseEvent, events::MouseEventType};
 use crate::components::*;
 
 //use super::arc_ball_modified::ArcBallModified;
@@ -15,6 +15,16 @@ pub struct Kiss3DHost
     arc_ball_camera:ArcBall,
     nodes:HashMap<Entity, SceneNode>,
     frameworky:Frameworky
+}
+
+#[derive(Default)]
+struct Kiss3DSystem
+{
+
+}
+
+impl SimpleSystem for Kiss3DSystem
+{
 }
 
 
@@ -98,19 +108,6 @@ impl Kiss3DHost
                     };
 
                     self.frameworky.context.push_event(e);
-                   /* if action == Action::Press 
-                    {
-                        let index:i32 = key as i32;
-                        let e = KeyEvent {
-
-                        }
-                    }
-                    else 
-                    {
-
-                    }*/
-
-
                 }
                 _ => {}
             }
