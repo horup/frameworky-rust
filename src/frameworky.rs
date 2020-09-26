@@ -12,7 +12,8 @@ impl Frameworky
     pub fn update(&mut self)
     {
         let new_time = instant::now() / 1000.0 as f64;
-        let update_time = new_time - self.context.time.current;
+        let mut update_time = new_time - self.context.time.current;
+        update_time = if update_time > 0.25 {0.25} else {update_time};
         self.context.time.current = new_time;
         self.context.time.accumulator += update_time;
         if self.context.once == false

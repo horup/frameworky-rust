@@ -6,7 +6,8 @@ pub struct Time
     pub t:f64,
     pub dt:f64,
     pub current:f64,
-    pub accumulator:f64
+    pub accumulator:f64,
+    pub alpha:f64
 }
 
 impl Default for Time
@@ -17,7 +18,8 @@ impl Default for Time
             t:0.0,
             dt:dt,
             current:instant::now() / 1000.0,
-            accumulator:0.0
+            accumulator:0.0,
+            alpha:0.0
         }
     }
 }
