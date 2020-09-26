@@ -37,6 +37,9 @@ impl Frameworky
             self.context.time.t += self.context.time.dt;
         }
 
+        self.context.time.alpha = self.context.time.accumulator / self.context.time.dt;
+        println!("{}", self.context.time.alpha);
+
         for s in self.systems.iter_mut()
         {
             s.update(&mut self.context);
