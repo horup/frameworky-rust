@@ -88,6 +88,7 @@ impl SimpleSystem for BodySystem
             }
         }
 
+        self.mechanical_world.set_timestep(context.time.dt as Precision);
         self.mechanical_world.step(&mut self.geometrical_world, &mut self.bodies, &mut self.colliders, &mut self.joint_constraints, &mut self.force_generators);
 
         for (_, t, b) in q.iter_mut(&mut context.world ){
