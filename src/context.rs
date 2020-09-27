@@ -34,13 +34,14 @@ pub struct Context
     pub events:Vec<Rc<dyn Any>>,
     pub time:Time,
     pub fixed_update_count:u64,
+    pub fixed_update_called:bool
 }
 
 impl Default for Context
 {
     fn default() -> Self
     {
-        Context { once:false, world:World::default(), events:Vec::new(), time:Time::default(), fixed_update_count:0 }
+        Context { once:false, world:World::default(), events:Vec::new(), time:Time::default(), fixed_update_count:0, fixed_update_called:false }
     }
 }
 

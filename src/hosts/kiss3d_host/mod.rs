@@ -1,8 +1,9 @@
 #[allow(dead_code)]
 mod arc_ball_modified;
 use arc_ball_modified::ArcBall;
+use world::{Duplicate, Merger};
 
-use std::{collections::HashMap, f32::consts::PI};
+use std::{collections::HashMap, f32::consts::PI, rc::Rc};
 use legion::*;
 use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
@@ -14,19 +15,9 @@ pub struct Kiss3DHost
 {
     arc_ball_camera:ArcBall,
     nodes:HashMap<Entity, SceneNode>,
-    frameworky:Frameworky
+    frameworky:Frameworky,
+    prev_state:World
 }
-
-#[derive(Default)]
-struct Kiss3DSystem
-{
-
-}
-
-impl SimpleSystem for Kiss3DSystem
-{
-}
-
 
 impl Kiss3DHost
 {
@@ -37,13 +28,14 @@ impl Kiss3DHost
             Point3::origin());
 
         let window = Window::new(title);
-        let backend = Kiss3DHost {
+        let host = Kiss3DHost {
             arc_ball_camera: arc_ball,
             nodes:HashMap::new(),
-            frameworky
+            frameworky,
+            prev_state:World::default()
         };
 
-        window.render_loop(backend);
+        window.render_loop(host);
     }
 
     fn sync_from(&mut self,  window:&mut Window) {
@@ -114,24 +106,34 @@ impl Kiss3DHost
         }
     }
 
-    pub fn render(&mut self, window:&mut Window) {
-        //let now = Instant::now();
-        self.sync_from(window);
-       // context.once = self.window.render_with_camera(&mut self.arc_ball_camera);
-
-       /* context.running = self.window.render_with_state(state)
-        let took = now.elapsed().as_millis();
-        let mut s = String::from("Sample render: ");
-        s.push_str(&took.to_string());
-        self.window.set_title(&s);*/
+    pub fn fixed_update(&mut self, _window:&mut Window)
+    {
+        let world = &mut self.frameworky.context.world;
+        self.prev_state.clear();
+        let mut duplicater = Duplicate::default();
+        duplicater.register_copy::<Transform>();
+        self.prev_state.clone_from(world, &legion::any(), &mut duplicater);
     }
+}
+
+struct Kiss3DData<'a>
+{
+    pub window:&'a mut Window
 }
 
 impl State for Kiss3DHost
 {
-    fn step(&mut self, window: &mut Window) {
-        self.frameworky.update();
+    fn step<'a>(&'a mut self, window: &'a mut Window) {
         self.process_events(window);
+        
+        let mut dt = Kiss3DData { window:window};
+
+        self.frameworky.update(&mut dt);
+        if self.frameworky.context.fixed_update_called
+        {
+            self.fixed_update(window);
+        }
+
         self.sync_from(window);
     }
 
