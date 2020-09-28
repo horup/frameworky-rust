@@ -23,13 +23,13 @@ impl SimpleSystem for Kiss3DSystem
         Some(self)
     }
 
-    fn update_fixed(&mut self, context:&mut Context) {
+    fn before_fixed_update(&mut self, context:&mut Context) {
         if let Some(window_ptr) = self.window
         {
             // window is a pointer to the underlying owner, which is unsafe
             unsafe {
                 let window = &mut (*window_ptr);
-                self.update_fixed(context, window);
+                self.before_fixed_update(context, window);
             }
         }
     }
@@ -118,7 +118,7 @@ impl Kiss3DSystem
     }
 
     
-    pub fn update_fixed(&mut self, context:&mut Context, window:&mut Window)
+    pub fn before_fixed_update(&mut self, context:&mut Context, window:&mut Window)
     {
         let world = &mut context.world;
         //self.prev_state.clear();

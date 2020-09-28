@@ -43,7 +43,7 @@ impl Default for BodySystem {
 
 impl SimpleSystem for BodySystem 
 {
-    fn update_fixed(&mut self, context:&mut crate::Context)
+    fn fixed_update(&mut self, context:&mut crate::Context)
     {
         let mut q = <(Entity, &mut Transform, &mut Body)>::query();
 

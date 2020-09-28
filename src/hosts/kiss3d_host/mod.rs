@@ -1,9 +1,8 @@
 #[allow(dead_code)]
 mod arc_ball_modified;
 use arc_ball_modified::ArcBall;
-use world::{Duplicate, Merger};
 
-use std::{cell::RefCell, collections::HashMap, f32::consts::PI, rc::Rc, rc::Weak};
+use std::{collections::HashMap};
 use legion::*;
 use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 

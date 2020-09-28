@@ -13,7 +13,12 @@ pub trait SimpleSystem : Any
         // do nothing is the default
     }
 
-    fn update_fixed(&mut self, _context:&mut Context)
+    fn before_fixed_update(&mut self, _context:&mut Context)
+    {
+        // do nothing is the default
+    }
+
+    fn fixed_update(&mut self, _context:&mut Context)
     {
         // do nothing is the default
     }

@@ -4,8 +4,7 @@ use crate::{Context, SimpleSystem};
 pub struct Frameworky
 {
     pub systems:Vec<Box<dyn SimpleSystem>>,
-    pub context:Context,
-    pub on_before_fixed_update:Option<Box<dyn Fn(&mut Context)>>
+    pub context:Context
 }
 
 impl Frameworky
@@ -30,13 +29,14 @@ impl Frameworky
 
         while self.context.time.accumulator >= self.context.time.dt
         {
-            if let Some(f) = &self.on_before_fixed_update
-            {
-                f(&mut self.context);
-            }
             for s in self.systems.iter_mut()
             {
-                s.update_fixed(&mut self.context);
+                s.before_fixed_update(&mut self.context);
+            }
+
+            for s in self.systems.iter_mut()
+            {
+                s.fixed_update(&mut self.context);
             }
 
             self.context.time.accumulator -= self.context.time.dt;
