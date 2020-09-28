@@ -3,11 +3,11 @@ mod arc_ball_modified;
 use arc_ball_modified::ArcBall;
 use world::{Duplicate, Merger};
 
-use std::{collections::HashMap, f32::consts::PI, rc::Rc};
+use std::{cell::RefCell, collections::HashMap, f32::consts::PI, rc::Rc};
 use legion::*;
 use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
-use crate::{Frameworky, SimpleSystem, events::KeyEvent, events::MouseEvent, events::MouseEventType};
+use crate::{Frameworky, SimpleSystem, events::KeyEvent, events::MouseEvent, events::MouseEventType, systems::Kiss3DSystem};
 use crate::components::*;
 
 //use super::arc_ball_modified::ArcBallModified;
@@ -21,8 +21,9 @@ pub struct Kiss3DHost
 
 impl Kiss3DHost
 {
-    pub fn start(frameworky:Frameworky, title:&str)
+    pub fn start(mut frameworky:Frameworky, title:&str)
     {
+        frameworky.push_system(Kiss3DSystem::default());
         let arc_ball = ArcBall::new(
             Point3::new(0.0, 20.0, 20.0),
             Point3::origin());
@@ -116,25 +117,25 @@ impl Kiss3DHost
     }
 }
 
-struct Kiss3DData<'a>
-{
-    pub window:&'a mut Window
-}
-
 impl State for Kiss3DHost
 {
     fn step<'a>(&'a mut self, window: &'a mut Window) {
-        self.process_events(window);
+        let refcell = Rc::new(RefCell::from(window));
+        self.process_events(&mut refcell.borrow_mut());
         
-        let mut dt = Kiss3DData { window:window};
+        /*let kiss3d_system:Option<&mut Kiss3DSystem> = self.frameworky.get_system_mut();
+        if let Some(s) = kiss3d_system
+        {
+            s.window = Some(refcell);
+        }*/
 
-        self.frameworky.update(&mut dt);
+        self.frameworky.update();
         if self.frameworky.context.fixed_update_called
         {
-            self.fixed_update(window);
+            self.fixed_update(&mut refcell.borrow_mut());
         }
 
-        self.sync_from(window);
+        self.sync_from(&mut refcell.borrow_mut());
     }
 
     fn cameras_and_effect_and_renderer(&mut self) -> (

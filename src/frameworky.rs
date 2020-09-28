@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use crate::{Context, SimpleSystem};
 
 #[derive(Default)]
@@ -12,7 +10,7 @@ pub struct Frameworky
 
 impl Frameworky
 {
-    pub fn update<'a, T:'a>(&'a mut self, host_data:&mut T)
+    pub fn update<'a>(&'a mut self)
     {
         self.context.fixed_update_called = false;
         let new_time = instant::now() / 1000.0 as f64;
@@ -65,8 +63,38 @@ impl Frameworky
         }
     }
 
-    pub fn push_system<T:SimpleSystem + 'static>(&mut self, s:T)
+    pub fn push_system<T:SimpleSystem + 'static + std::any::Any>(&mut self, s:T)
     {
         self.systems.push(Box::new(s));
+    }
+
+    pub fn get_system<T>(&self) -> Option<&T> where T : SimpleSystem
+    {
+        for s in self.systems.iter()
+        {
+            if let Some(any) = s.as_any()
+            {
+                if let Some(concrete) = any.downcast_ref::<T>()
+                {
+                    return Some(concrete);
+                }
+            }
+        }
+        None
+    }
+
+    pub fn get_system_mut<T>(&mut self) -> Option<&mut T> where T : SimpleSystem
+    {
+        for s in self.systems.iter_mut()
+        {
+            if let Some(any) = s.as_any_mut()
+            {
+                if let Some(concrete) = any.downcast_mut::<T>()
+                {
+                    return Some(concrete);
+                }
+            }
+        }
+        None
     }
 }
