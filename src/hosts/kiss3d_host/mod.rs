@@ -2,20 +2,16 @@
 mod arc_ball_modified;
 use arc_ball_modified::ArcBall;
 
-use std::{collections::HashMap};
-use legion::*;
-use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
+use kiss3d::{window::Window, nalgebra::Point3, 
+    window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
-use crate::{Frameworky, SimpleSystem, events::KeyEvent, events::MouseEvent, events::MouseEventType, systems::Kiss3DSystem};
-use crate::components::*;
+use crate::{Frameworky, systems::Kiss3DSystem};
 
 //use super::arc_ball_modified::ArcBallModified;
 pub struct Kiss3DHost
 {
     arc_ball_camera:ArcBall,
-    nodes:HashMap<Entity, SceneNode>,
-    frameworky:Frameworky,
-    prev_state:World
+    frameworky:Frameworky
 }
 
 impl Kiss3DHost
@@ -30,9 +26,7 @@ impl Kiss3DHost
         let window = Window::new(title);
         let host = Kiss3DHost {
             arc_ball_camera: arc_ball,
-            nodes:HashMap::new(),
-            frameworky,
-            prev_state:World::default()
+            frameworky
         };
 
         window.render_loop(host);

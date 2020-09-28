@@ -1,6 +1,6 @@
 use std::{any::Any, collections::HashMap, f32::consts::PI};
 use kiss3d::{event::Action, event::MouseButton, event::WindowEvent, scene::SceneNode, window::Window};
-use legion::{Entity, world::Duplicate};
+use legion::{Entity, World, world::Duplicate};
 use nalgebra::{UnitQuaternion, Vector3};
 use nphysics3d::math::Translation;
 use legion::query::*;
@@ -12,6 +12,7 @@ pub struct Kiss3DSystem
 {
     pub window:Option<*mut Window>,
     nodes:HashMap<Entity, SceneNode>,
+    prev_state:World
 }
 
 impl SimpleSystem for Kiss3DSystem
@@ -118,13 +119,14 @@ impl Kiss3DSystem
     }
 
     
-    pub fn before_fixed_update(&mut self, context:&mut Context, window:&mut Window)
+    pub fn before_fixed_update(&mut self, context:&mut Context, _window:&mut Window)
     {
         let world = &mut context.world;
-        //self.prev_state.clear();
+        self.prev_state.clear();
         let mut duplicater = Duplicate::default();
         duplicater.register_copy::<Transform>();
-        //self.prev_state.clone_from(world, &legion::any(), &mut duplicater);
+        duplicater.register_copy::<Body>();
+        self.prev_state.clone_from(world, &legion::any(), &mut duplicater);
     }
 
     pub fn update(&mut self, context:&mut Context, window:&mut Window)
