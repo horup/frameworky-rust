@@ -19,7 +19,7 @@ nphysics3d = {version = "0.17.0", features = ["use-wasm-bindgen"]}
 generational-arena = "0.2.8"
 instant = "0.1.7"
 
-kiss3d = {git = "https://github.com/sebcrozet/kiss3d.git", branch = "master"}
-
+#kiss3d = {git = "https://github.com/sebcrozet/kiss3d.git", branch = "master"}
+kiss3d = "0.26.0"
 [dev-dependencies]
 wasm-pack = "0.9.1"
