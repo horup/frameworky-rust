@@ -10,7 +10,7 @@ pub struct Frameworky
 
 impl Frameworky
 {
-    pub fn update<'a>(&'a mut self)
+    pub fn update(&mut self)
     {
         self.context.fixed_update_called = false;
         let new_time = instant::now() / 1000.0 as f64;

@@ -3,7 +3,7 @@ mod arc_ball_modified;
 use arc_ball_modified::ArcBall;
 use world::{Duplicate, Merger};
 
-use std::{cell::RefCell, collections::HashMap, f32::consts::PI, rc::Rc};
+use std::{cell::RefCell, collections::HashMap, f32::consts::PI, rc::Rc, rc::Weak};
 use legion::*;
 use kiss3d::{window::Window, ncollide3d::math::Translation, scene::SceneNode, event::WindowEvent, event::Action, event::MouseButton, nalgebra::Point3, nalgebra::UnitQuaternion, nalgebra::Vector3, window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
@@ -117,25 +117,28 @@ impl Kiss3DHost
     }
 }
 
+struct Kiss3DData
+{
+    pub window:Weak<RefCell<Window>>
+}
+
 impl State for Kiss3DHost
 {
-    fn step<'a>(&'a mut self, window: &'a mut Window) {
-        let refcell = Rc::new(RefCell::from(window));
-        self.process_events(&mut refcell.borrow_mut());
-        
-        /*let kiss3d_system:Option<&mut Kiss3DSystem> = self.frameworky.get_system_mut();
+    fn step<'a>(&mut self, window: &mut Window) {
+
+        self.process_events(window);
+
+        let kiss3d_system:Option<&mut Kiss3DSystem> = self.frameworky.get_system_mut();
         if let Some(s) = kiss3d_system
         {
-            s.window = Some(refcell);
-        }*/
-
-        self.frameworky.update();
-        if self.frameworky.context.fixed_update_called
-        {
-            self.fixed_update(&mut refcell.borrow_mut());
+            // pointers are used since Window is owner
+            // thus an unsafe unsafe circular reference
+            let p:*mut Window = window;
+            s.window = Some(p);
         }
 
-        self.sync_from(&mut refcell.borrow_mut());
+        self.frameworky.update();
+        self.sync_from(window);
     }
 
     fn cameras_and_effect_and_renderer(&mut self) -> (
