@@ -82,60 +82,74 @@ impl Kiss3DSystem
         }
     }
 
-    
-    fn sync_from(&mut self,  context:&mut Context, window:&mut Window) {
-        let bodies = &mut self.nodes;
+    fn render(&mut self, context:&mut Context, window:&mut Window)
+    {
+        let nodes = &mut self.nodes;
+        let prev_state = &self.prev_state;
         let world = &mut context.world;
-        let col = || rand::random::<f32>();
-        let test = Transform::new(0.0, 0.0, 0.0);
-        test.position.x;
+        let alpha = context.time.alpha;
+        <(Entity, &Transform, &Body)>::query().for_each(prev_state, |(e, t, b)| {
 
-        <(Entity, &mut Transform, &mut Body)>::query().for_each_mut(world, |(k, t, b)| {
-            if !bodies.contains_key(k) {
+            if let Some(current) = world.entry(*e)
+            {
+                if let Ok(current_t) = current.get_component::<Transform>()
+                {
+                    if let Some(node) = nodes.get_mut(e) {
+                        let prev_t = &t;
+                        let current_p = current_t.position;
+                        let prev_p = prev_t.position;
+                        let mut v:Vector3<f32> = current_p - prev_p;
+                        v.normalize();
+                        let p = prev_p + v.scale(alpha as f32);
+
+                        node.set_local_translation(Translation::new(p.x, p.y, p.z));
+                    }
+                }
+
+            }
+            else
+            {
+                // TODO remove node
+            }
+          
+        });
+    }
+
+    
+    pub fn before_fixed_update(&mut self, context:&mut Context, window:&mut Window)
+    {
+        let world = &mut context.world;
+        self.prev_state.clear();
+        <(Entity, &Transform, &Body)>::query().for_each(world, |(e, t, b)| {
+            self.prev_state.push_with_id(*e, (t.clone(), b.clone()));
+            let nodes = &mut self.nodes;
+
+            if !nodes.contains_key(e)
+            {
+                let col = || rand::random::<f32>();
                 if b.shape == Shape::Sphere {
                     let mut sphere = window.add_sphere(0.5);
                     sphere.set_color(col(), col(), col());
-                    bodies.insert(*k, sphere);
-/*
-                    let mut quad = window.add_quad(1.0, 1.0, 1, 1);
-                    quad.set_color(col(), col(), col());
-                    bodies.insert(*k, quad);*/
+                    nodes.insert(*e, sphere);
                 }
                 else if b.shape == Shape::Plane {
                     let size = 100.0;
                     let mut plane = window.add_quad(size, size, 1, 1);
                     let rot = UnitQuaternion::from_axis_angle(&Vector3::<f32>::x_axis(), PI / 2.0);
                     plane.append_rotation(&rot);
-                    bodies.insert(*k, plane);
+                    nodes.insert(*e, plane);
                 }
             }
 
-            if let Some(node) = bodies.get_mut(k) {
-                let p = &t.position;
-                node.set_local_translation(Translation::new(p.x, p.y, p.z));
-            }
-           
         });
-    }
-
-    
-    pub fn before_fixed_update(&mut self, context:&mut Context, _window:&mut Window)
-    {
-        let world = &mut context.world;
-        self.prev_state.clear();
-        let mut duplicater = Duplicate::default();
-        duplicater.register_copy::<Transform>();
-        duplicater.register_copy::<Body>();
-        self.prev_state.clone_from(world, &legion::any(), &mut duplicater);
     }
 
     pub fn update(&mut self, context:&mut Context, window:&mut Window)
     {
         self.process_events(context, window);
-        self.sync_from(context, window);
+        //self.sync_from(context, window);
+        self.render(context, window);
     }
-    
-
 
 }
 
