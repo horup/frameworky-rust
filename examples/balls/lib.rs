@@ -1,5 +1,5 @@
 use std::any::Any;
-use components::Body;
+use components::{Body, Camera};
 use components::Transform;
 use components::Shape;
 use hosts::kiss3d_host::Kiss3DHost;
@@ -46,6 +46,10 @@ pub fn start()
     let mut f :Frameworky = Frameworky::default();
     f.push_system(ClickSystem::default());
     f.push_system(BodySystem::default());
+
+    
+    let camera = (Transform::new(0.0, 20.0, 20.0), Camera::default());
+    f.context.world.push(camera);
 
     let plane = (Transform::new(0.0, 0.0, 0.0), Body::new(Shape::Plane));
     f.context.world.push(plane);

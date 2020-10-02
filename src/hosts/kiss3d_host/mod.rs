@@ -12,7 +12,6 @@ use crate::{Frameworky, systems::Kiss3DSystem};
 //use super::arc_ball_modified::ArcBallModified;
 pub struct Kiss3DHost
 {
-    arc_ball_camera:ArcBall,
     frameworky:Frameworky
 }
 
@@ -21,13 +20,8 @@ impl Kiss3DHost
     pub fn start(mut frameworky:Frameworky, title:&str)
     {
         frameworky.push_system(Kiss3DSystem::default());
-        let arc_ball = ArcBall::new(
-            Point3::new(0.0, 20.0, 20.0),
-            Point3::origin());
-
         let window = Window::new(title);
         let host = Kiss3DHost {
-            arc_ball_camera: arc_ball,
             frameworky
         };
 
@@ -57,8 +51,12 @@ impl State for Kiss3DHost
         Option<&mut dyn Renderer>,
         Option<&mut dyn PostProcessingEffect>) 
     {
-        let cam:&mut dyn Camera = &mut self.arc_ball_camera;
-        (Some(cam), None, None, None)
+        if let Some(system) = self.frameworky.get_system_mut::<Kiss3DSystem>() {
+            let cam:&mut dyn Camera = &mut system.camera;
+            return (Some(cam), None, None, None);
+        }
+
+        return (None, None, None, None);
     }
 
 }

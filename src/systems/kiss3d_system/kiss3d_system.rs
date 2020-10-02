@@ -1,18 +1,32 @@
 use std::{any::Any, collections::HashMap, f32::consts::PI};
 use kiss3d::{event::Action, event::MouseButton, event::WindowEvent, scene::SceneNode, window::Window};
 use legion::{Entity, World, world::Duplicate};
-use nalgebra::{UnitQuaternion, Vector3};
+use nalgebra::{Point3, UnitQuaternion, Vector3};
 use nphysics3d::math::Translation;
 use legion::query::*;
 
 use crate::{Context, SimpleSystem, components::Body, components::Shape, components::Transform, events::KeyEvent, events::MouseEvent, events::MouseEventType};
 
-#[derive(Default)]
+use super::arc_ball_modified::ArcBall;
+
 pub struct Kiss3DSystem
 {
     pub window:Option<*mut Window>,
     nodes:HashMap<Entity, SceneNode>,
-    prev_state:World
+    prev_state:World,
+    pub camera:ArcBall
+}
+
+impl Default for Kiss3DSystem
+{
+    fn default() -> Self {
+        Kiss3DSystem {
+            window:None,
+            nodes:HashMap::new(),
+            prev_state:World::default(),
+            camera:ArcBall::new(Point3::new(0.0, 20.0, 20.0), Point3::origin())
+        }
+    }
 }
 
 impl SimpleSystem for Kiss3DSystem
