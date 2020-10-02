@@ -1,6 +1,6 @@
 use std::{any::Any, collections::HashMap, f32::consts::PI};
 use kiss3d::{event::Action, event::MouseButton, event::WindowEvent, scene::SceneNode, window::Window};
-use legion::{Entity, World, world::Duplicate};
+use legion::{Entity, World};
 use nalgebra::{Point3, UnitQuaternion, Vector3};
 use nphysics3d::math::Translation;
 use legion::query::*;
@@ -96,13 +96,13 @@ impl Kiss3DSystem
         }
     }
 
-    fn render(&mut self, context:&mut Context, window:&mut Window)
+    fn render(&mut self, context:&mut Context, _window:&mut Window)
     {
         let nodes = &mut self.nodes;
         let prev_state = &self.prev_state;
         let world = &mut context.world;
         let alpha = context.time.alpha;
-        <(Entity, &Transform, &Body)>::query().for_each(prev_state, |(e, t, b)| {
+        <(Entity, &Transform, &Body)>::query().for_each(prev_state, |(e, t, _b)| {
 
             if let Some(current) = world.entry(*e)
             {
@@ -112,10 +112,8 @@ impl Kiss3DSystem
                         let prev_t = &t;
                         let current_p = current_t.position;
                         let prev_p = prev_t.position;
-                        let mut v:Vector3<f32> = current_p - prev_p;
-                        v.normalize();
+                        let v:Vector3<f32> = current_p - prev_p;
                         let p = prev_p + v.scale(alpha as f32);
-
                         node.set_local_translation(Translation::new(p.x, p.y, p.z));
                     }
                 }

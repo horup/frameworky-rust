@@ -1,10 +1,7 @@
 #[allow(dead_code)]
 mod arc_ball_modified;
-use arc_ball_modified::ArcBall;
-use nalgebra::Point2;
-use nphysics3d::math::Point;
 
-use kiss3d::{window::Window, nalgebra::Point3, 
+use kiss3d::{window::Window, 
     window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
 
 use crate::{Frameworky, systems::Kiss3DSystem};
