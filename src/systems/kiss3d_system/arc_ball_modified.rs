@@ -361,6 +361,7 @@ impl Camera for ArcBall {
     }
 
     fn handle_event(&mut self, canvas: &Canvas, event: &WindowEvent) {
+        /*
         match *event {
             WindowEvent::CursorPos(x, y, modifiers) => {
                 let curr_pos = Vector2::new(x as f32, y as f32);
@@ -398,7 +399,7 @@ impl Camera for ArcBall {
                 self.update_projviews();
             }
             _ => {}
-        }
+        }*/
     }
 
     #[inline]

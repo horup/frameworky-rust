@@ -5,7 +5,7 @@ use nalgebra::{Point3, UnitQuaternion, Vector3};
 use nphysics3d::math::Translation;
 use legion::query::*;
 
-use crate::{Context, SimpleSystem, components::Body, components::Shape, components::Transform, events::KeyEvent, events::MouseEvent, events::MouseEventType};
+use crate::{Context, SimpleSystem, components::Body, components::Camera, components::Shape, components::Transform, events::KeyEvent, events::MouseEvent, events::MouseEventType};
 
 use super::arc_ball_modified::ArcBall;
 
@@ -13,8 +13,9 @@ pub struct Kiss3DSystem
 {
     pub window:Option<*mut Window>,
     nodes:HashMap<Entity, SceneNode>,
-    prev_state:World,
-    pub camera:ArcBall
+   // prev_state:World,
+    pub camera:ArcBall,
+    prev_transforms:HashMap<Entity, Transform>
 }
 
 impl Default for Kiss3DSystem
@@ -23,8 +24,9 @@ impl Default for Kiss3DSystem
         Kiss3DSystem {
             window:None,
             nodes:HashMap::new(),
-            prev_state:World::default(),
-            camera:ArcBall::new(Point3::new(0.0, 20.0, 20.0), Point3::origin())
+          //  prev_state:World::default(),
+            camera:ArcBall::new(Point3::new(0.0, 20.0, 20.0), Point3::origin()),
+            prev_transforms:HashMap::new()
         }
     }
 }
@@ -99,40 +101,66 @@ impl Kiss3DSystem
     fn render(&mut self, context:&mut Context, _window:&mut Window)
     {
         let nodes = &mut self.nodes;
-        let prev_state = &self.prev_state;
+        //let prev_state = &self.prev_state;
         let world = &mut context.world;
         let alpha = context.time.alpha;
-        <(Entity, &Transform, &Body)>::query().for_each(prev_state, |(e, t, _b)| {
-
-            if let Some(current) = world.entry(*e)
+        let prev_transforms = &self.prev_transforms;
+        let camera = &mut self.camera;
+        <(Entity, &Transform)>::query().for_each(world, |(e, current_t)| {
+            if let Some(prev_t) = prev_transforms.get(e)
             {
-                if let Ok(current_t) = current.get_component::<Transform>()
-                {
-                    if let Some(node) = nodes.get_mut(e) {
-                        let prev_t = &t;
-                        let current_p = current_t.position;
-                        let prev_p = prev_t.position;
-                        let v:Vector3<f32> = current_p - prev_p;
-                        let p = prev_p + v.scale(alpha as f32);
-                        node.set_local_translation(Translation::new(p.x, p.y, p.z));
-                    }
+                let interpolated = current_t.lerp(prev_t, alpha as f32);
+                let p = interpolated.position;
+                if let Some(node) = nodes.get_mut(e) {
+                    node.set_local_translation(Translation::new(p.x, p.y, p.z));
                 }
+            }
+        });
 
-            }
-            else
+        <(Entity, &Transform, &Camera)>::query().for_each(world, |(e, current_t, _c)| {
+            if let Some(prev_t) = prev_transforms.get(e)
             {
-                // TODO remove node
+                let interpolated = current_t.lerp(prev_t, alpha as f32);
+                let p = interpolated.position;
+                camera.set_at(Point3::new(p.x, p.y, p.z));
             }
-          
         });
     }
+
 
     
     pub fn before_fixed_update(&mut self, context:&mut Context, window:&mut Window)
     {
         let world = &mut context.world;
-        self.prev_state.clear();
-        <(Entity, &Transform, &Body)>::query().for_each(world, |(e, t, b)| {
+        self.prev_transforms.clear();
+        <(Entity, &Transform)>::query().for_each(world, |(e, t)|{
+            self.prev_transforms.insert(*e, *t);
+        });
+
+        <(Entity, &Body)>::query().for_each(world, |(e, b)| {
+            let nodes = &mut self.nodes;
+            if !nodes.contains_key(e)
+            {
+                let col = || rand::random::<f32>();
+                if b.shape == Shape::Sphere {
+                    let mut sphere = window.add_sphere(0.5);
+                    sphere.set_color(col(), col(), col());
+                    nodes.insert(*e, sphere);
+                }
+                else if b.shape == Shape::Plane {
+                    let size = 100.0;
+                    let mut plane = window.add_quad(size, size, 1, 1);
+                    let rot = UnitQuaternion::from_axis_angle(&Vector3::<f32>::x_axis(), PI / 2.0);
+                    plane.append_rotation(&rot);
+                    nodes.insert(*e, plane);
+                }
+            }
+        });
+
+
+      //  self.prev_state.clear();
+        
+        /*<(Entity, &Transform, &Body)>::query().for_each(world, |(e, t, b)| {
             self.prev_state.push_with_id(*e, (t.clone(), b.clone()));
             let nodes = &mut self.nodes;
 
@@ -154,6 +182,11 @@ impl Kiss3DSystem
             }
 
         });
+
+        let (left, right) = world.split::<&Transform>();
+        <(Entity, &Transform)>::query().for_each(&left, |(e, t)| {
+            
+        });*/
     }
 
     pub fn update(&mut self, context:&mut Context, window:&mut Window)
