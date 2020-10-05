@@ -1,5 +1,4 @@
 #[allow(dead_code)]
-mod arc_ball_modified;
 
 use kiss3d::{window::Window, 
     window::State, camera::Camera, planar_camera::PlanarCamera, renderer::Renderer, post_processing::PostProcessingEffect};
