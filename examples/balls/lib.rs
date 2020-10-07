@@ -8,6 +8,7 @@ use systems::{BodySystem};
 use frameworky::*;
 use events::{KeyEvent};
 use wasm_bindgen::prelude::*;
+use legion::query::*;
 
 #[derive(Debug, Default)]
 struct ClickSystem
@@ -17,11 +18,33 @@ struct ClickSystem
 
 impl SimpleSystem for ClickSystem
 {
-    fn execute(&mut self, _context:&mut Context, event:&dyn Any)
+    fn execute(&mut self, context:&mut Context, event:&dyn Any)
     {
-        let key_event = event.downcast_ref::<KeyEvent>();
+        let key_event:Option<&KeyEvent> = event.downcast_ref::<KeyEvent>();
         if let Some(key) = key_event {
-            self.spawn = key.down;
+            println!("{}", key.key);
+
+            // 10 = A, 13 = D, 32 = W, 28 = S
+
+            <(&Camera, &mut Transform)>::query().for_each_mut(&mut context.world, |(c, t)| {
+                let speed = 1.0;
+                if key.key == 10
+                {
+                    // left
+                    t.position.x -= speed;
+                }
+                else if key.key == 13
+                {
+                    // right
+                    t.position.x += speed;
+                }
+            });
+            
+
+            if key.key == 76 // space
+            {
+                self.spawn = key.down;
+            }
         }
     }
 
