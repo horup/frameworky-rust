@@ -48,7 +48,7 @@ pub fn start()
     f.push_system(BodySystem::default());
 
     
-    let camera = (Transform::new(0.0, 20.0, 20.0), Camera::default(), Body::new(Shape::Sphere));
+    let camera = (Transform::new(0.0, 20.0, 20.0), Camera::default());
     f.context.world.push(camera);
 
     let plane = (Transform::new(0.0, 0.0, 0.0), Body::new(Shape::Plane));

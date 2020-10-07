@@ -117,12 +117,15 @@ impl Kiss3DSystem
             }
         });
 
-        <(Entity, &Transform, &Camera)>::query().for_each(world, |(e, current_t, _c)| {
+        <(Entity, &Transform, &Camera)>::query().for_each(world, |(e, current_t, c)| {
             if let Some(prev_t) = prev_transforms.get(e)
             {
                 let interpolated = current_t.lerp(prev_t, alpha as f32);
                 let p = interpolated.position;
-                camera.set_at(Point3::new(p.x, p.y, p.z));
+                let eye = Point3::new(p.x, p.y, p.z);
+                let d = c.direction;
+                let at = Point3::new(p.x + d.x, p.y + d.y, p.z + d.z);
+                camera.look_at(eye, at);
             }
         });
     }

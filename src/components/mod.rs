@@ -7,3 +7,5 @@ pub use text2d::*;
 pub use body::*;
 pub use transform::Transform;
 pub use camera::Camera;
+
+pub type Precision = f32;
